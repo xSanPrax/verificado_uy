@@ -15,13 +15,13 @@ export default function Home() {
         <section className="text-center mt-8">
           <h2 className="text-3xl font-semibold">¡No te dejes engañar!</h2>
           <p className="mt-4 text-lg">
-            En Verificado Uy te ayudamos a diferenciar entre las noticias reales y los bulos. Nuestra misión es brindar información verificada y ayudar a la comunidad a mantenerse informada.
+            En Verificado Uy te ayudamos a diferenciar entre los hechos reales y la desinformación. Nuestra misión es brindar información verificada y ayudar a la comunidad a mantenerse informada.
           </p>
           <a
-            href="#verify-now"
+            href="login"
             className="inline-block mt-6 px-8 py-4 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 transition-colors"
           >
-            Verificar una noticia ahora
+            Verificar un hecho ahora
           </a>
         </section>
 
@@ -35,18 +35,18 @@ export default function Home() {
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105"
               >
                 <Image
-                  src={`/news_verified_${id}.jpg`}
-                  alt={`Verificación noticia ${id}`}
+                  src={`/facts_verified_${id}.jpg`}
+                  alt={`Verificación hecho ${id}`}
                   width={400}
                   height={300}
                   className="w-full h-40 object-cover"
                 />
                 <div className="p-4">
                   <h3 className="text-xl font-semibold">
-                    Verificación: Noticia {id}
+                    Verificación: Hecho {id}
                   </h3>
                   <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">
-                    Un breve resumen de la noticia verificada y el resultado: verdadera, falsa o engañosa. Haz clic para más detalles.
+                    Un breve resumen del hecho verificado y el resultado: verdadero, falso o engañoso. Haz clic para más detalles.
                   </p>
                   <a
                     href="#"
@@ -60,23 +60,23 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Submit News for Verification */}
+        {/* Submit Fact for Verification */}
         <section id="verify-now" className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg text-center">
-          <h2 className="text-2xl font-semibold mb-4">Envía una Noticia para Verificación</h2>
+          <h2 className="text-2xl font-semibold mb-4">Envía un Hecho para Verificación</h2>
           <p className="mb-6 text-lg">
-            ¿Tienes dudas sobre una noticia? Envíala a nuestro equipo y te ayudaremos a verificar su veracidad.
+            ¿Tienes dudas sobre un hecho? Envíalo a nuestro equipo y te ayudaremos a verificar su veracidad.
           </p>
           <form className="space-y-4 max-w-md mx-auto">
             <div>
-              <label htmlFor="newsLink" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Enlace de la noticia
+              <label htmlFor="factLink" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Enlace del hecho
               </label>
               <input
                 type="url"
-                id="newsLink"
+                id="factLink"
                 required
                 className="w-full mt-1 p-3 text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="https://ejemplo.com/noticia"
+                placeholder="https://ejemplo.com/hecho"
               />
             </div>
             <button
