@@ -1,4 +1,4 @@
-import { IS_AUTH, LOGIN, MOSTRAR_ALERTA, OCULTAR_ALERTA, REGISTRO, LOGOUT, CARGANDO, ACTUALIZAR_INFO } from "@/types";
+import { IS_AUTH, LOGIN, MOSTRAR_ALERTA, OCULTAR_ALERTA, REGISTRO, LOGOUT, CARGANDO, ACTUALIZAR_INFO } from "@/app/types/app";
 
 
 // eslint-disable-next-line import/no-anonymous-default-export
