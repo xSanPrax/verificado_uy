@@ -1,137 +1,118 @@
-"use client";
-import { useState, useContext } from "react";
-import { useRouter } from "next/navigation";
-import AuthContext from "@/context/auth/auth_context.jsx";
+"use client"
 
-export default function Register() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [nombre, setNombre] = useState(''); 
-    const [error, setError] = useState(null);
-    const router = useRouter();
-    const { internalRegister, mensaje, cargando } = useContext(AuthContext);
+import { useContext } from "react";
+import AuthContext from '@/context/auth/auth_context'; 
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
+const Register = () => {
+  const { internalRegister, cargando, mensaje } = useContext(AuthContext);
 
-        if (password !== confirmPassword) {
-            setError('Las contraseñas no coinciden');
-            return;
-        }
+  // Valores iniciales del formulario
+  const initialValues = {
+    nombre: "",
+    email: "",
+    password: "",
+  };
 
-        try {
-            // Llamar a la función de registro interno
-            await internalRegister(nombre, email, password);
+  // Esquema de validación usando Yup
+  const validationSchema = Yup.object({
+    nombre: Yup.string()
+      .min(3, "El nombre debe tener al menos 3 caracteres")
+      .required("El nombre es obligatorio"),
+    email: Yup.string()
+      .email("Email inválido")
+      .required("El email es obligatorio"),
+    password: Yup.string()
+      .min(6, "La contraseña debe tener al menos 6 caracteres")
+      .required("La contraseña es obligatoria"),
+  });
 
-            // Redirige al usuario después del registro
-            router.push('login');
-        } catch (error) {
-            setError('Error al registrar la cuenta');
-        }
-    };
+  // Función para manejar el envío del formulario
+  const onSubmit = async (values, { resetForm }) => {
+    await internalRegister(values.nombre, values.email, values.password);
+    resetForm();
+  };
 
-    const handleExternalRegister = async () => {
-        try {
-            await externalLogin();
-            router.push('/login');
-        } catch (error) {
-            setError("Error al registrarse con el método externo");
-        }
-    };
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-200 text-center mb-6">Registrarse</h2>
+        {mensaje && (
+          <div className="mb-4 text-sm text-red-600 dark:text-red-400 text-center">
+            {mensaje}
+          </div>
+        )}
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          {({ isValid, dirty }) => (
+            <Form className="space-y-6">
+              {/* Campo de Nombre */}
+              <div>
+                <label htmlFor="nombre" className="block text-sm font-medium text-gray-600 dark:text-gray-300">Nombre</label>
+                <Field
+                  type="text"
+                  name="nombre"
+                  id="nombre"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:text-gray-100"
+                  placeholder="Tu Nombre Completo"
+                />
+                <ErrorMessage name="nombre" component="div" className="text-red-500 text-sm mt-1" />
+              </div>
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-green-500 p-6">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-2xl">
-                <div className="flex flex-col items-center">
-                    <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-4">Registrarse</h2>
-                    <p className="text-gray-600 mb-6 text-center">Crea tu cuenta para empezar</p>
-                </div>
-                <form className="space-y-6" onSubmit={handleRegister}>
-                    <div>
-                        <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
-                            Nombre
-                        </label>
-                        <input
-                            type="text"
-                            id="nombre"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm"
-                            placeholder="Tu nombre"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                            Correo electrónico
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm"
-                            placeholder="correo@ejemplo.com"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                            Contraseña
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm"
-                            placeholder="********"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                            Confirmar contraseña
-                        </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm"
-                            placeholder="********"
-                        />
-                    </div>
-                    {error && <p className="text-sm text-red-600 text-center">{error}</p>}
-                    {mensaje && <p className="text-sm text-green-600 text-center">{mensaje}</p>}
-                    <button
-                        type="submit"
-                        className="w-full py-3 mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-                        disabled={cargando}
-                    >
-                        {cargando ? "Registrando..." : "Registrarse"}
-                    </button>
-                </form>
-                <div className="flex items-center justify-center my-4">
-                    <span className="w-full h-px bg-gray-300"></span>
-                    <span className="px-4 text-gray-600">O</span>
-                    <span className="w-full h-px bg-gray-300"></span>
-                </div>
-                <button
-                    onClick={handleExternalRegister}
-                    className="w-full py-3 text-white bg-green-600 hover:bg-green-700 font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-                >
-                    Registrarse con usuario gub.uy
-                </button>
-                <p className="text-sm text-center text-gray-600 mt-6">
-                    ¿Ya tienes cuenta?{' '}
-                    <a href="login" className="font-medium text-blue-700 hover:underline">
-                        Inicia sesión
-                    </a>
-                </p>
-            </div>
+              {/* Campo de Email */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-600 dark:text-gray-300">Email</label>
+                <Field
+                  type="email"
+                  name="email"
+                  id="email"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:text-gray-100"
+                  placeholder="ejemplo@correo.com"
+                />
+                <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
+              </div>
+
+              {/* Campo de Contraseña */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-600 dark:text-gray-300">Contraseña</label>
+                <Field
+                  type="password"
+                  name="password"
+                  id="password"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:text-gray-100"
+                  placeholder="••••••••"
+                />
+                <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
+              </div>
+
+              {/* Botón de Envío */}
+              <button
+                type="submit"
+                disabled={cargando || !(isValid && dirty)}
+                className={`w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-200 ${
+                  cargando ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {cargando ? "Registrando..." : "Registrar"}
+              </button>
+            </Form>
+          )}
+        </Formik>
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            ¿Ya tienes una cuenta?{" "}
+            <a href="/login" className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-500 font-medium">
+              Inicia Sesión
+            </a>
+          </p>
         </div>
-    );
-}
+      </div>
+    </div>
+  );
+};
+
+export default Register;

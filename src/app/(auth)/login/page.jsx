@@ -1,99 +1,81 @@
-"use client";
-import { useState, useContext } from 'react';
-import { useRouter } from 'next/navigation';
-import AuthContext from '@/context/auth/auth_context'; // Importa el contexto correctamente
+"use client"
 
-export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
-    const router = useRouter();
+import { useContext, useState } from "react";
+import AuthContext from '@/context/auth/auth_context'; 
 
-    // Usa el contexto para obtener `externalLogin`
-    const { externalLogin } = useContext(AuthContext);
+const Login = () => {
+  const { internalLogin, cargando, mensaje } = useContext(AuthContext);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+  const { email, password } = formData;
 
-        // Simulación de validación de login
-        if (email === 'usuario@example.com' && password === 'password123') {
-            router.push('/');
-        } else {
-            setError('Correo o contraseña incorrectos');
-        }
-    };
+  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    const handleExternalLogin = async () => {
-        try {
-            await externalLogin();
-            router.push('/');
-        } catch (error) {
-            setError("Error al autenticarse con el método externo");
-        }
-    };
+  const onSubmit = async e => {
+    e.preventDefault();
+    await internalLogin(email, password);
+  };
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-green-500 p-6">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-2xl">
-                <div className="flex flex-col items-center">
-                    <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-4">Iniciar Sesión</h2>
-                    <p className="text-gray-600 mb-6 text-center">Bienvenido de nuevo, por favor ingresa a tu cuenta</p>
-                </div>
-                <form className="space-y-6" onSubmit={handleLogin}>
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                            Correo electrónico
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm"
-                            placeholder="correo@ejemplo.com"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                            Contraseña
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm"
-                            placeholder="********"
-                        />
-                    </div>
-                    {error && <p className="text-sm text-red-600 text-center">{error}</p>}
-                    <button
-                        type="submit"
-                        className="w-full py-3 mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-                    >
-                        Iniciar sesión
-                    </button>
-                </form>
-                <div className="flex items-center justify-center my-4">
-                    <span className="w-full h-px bg-gray-300"></span>
-                    <span className="px-4 text-gray-600">O</span>
-                    <span className="w-full h-px bg-gray-300"></span>
-                </div>
-                <button
-                    onClick={handleExternalLogin}
-                    className="w-full py-3 text-white bg-green-600 hover:bg-green-700 font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-                >
-                    Iniciar sesión con usuario gub.uy
-                </button>
-                <p className="text-sm text-center text-gray-600 mt-6">
-                    ¿No tienes cuenta?{' '}
-                    <a href="register" className="font-medium text-blue-700 hover:underline">
-                        Regístrate
-                    </a>
-                </p>
-            </div>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold text-gray-700 text-center mb-6">Iniciar Sesión</h2>
+        {mensaje && (
+          <div className="mb-4 text-sm text-red-600">
+            {mensaje}
+          </div>
+        )}
+        <form onSubmit={onSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-600">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={email}
+              onChange={onChange}
+              required
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="ejemplo@correo.com"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-600">Contraseña</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              value={password}
+              onChange={onChange}
+              required
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="••••••••"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={cargando}
+            className={`w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ${
+              cargando ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {cargando ? "Iniciando sesión..." : "Login"}
+          </button>
+        </form>
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-600">
+            ¿No tienes una cuenta?{" "}
+            <a href="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+              Regístrate
+            </a>
+          </p>
         </div>
-    );
-}
+      </div>
+    </div>
+  );
+};
+
+export default Login;
