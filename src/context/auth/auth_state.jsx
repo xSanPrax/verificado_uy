@@ -10,7 +10,7 @@ export const AuthState = ({ children }) => {
   const initialState = {
     usuarioAuth: null,
     isAuthenticated: false,
-    cargando: false,
+    cargando: true,
     mensaje: null,
   };
 
@@ -101,18 +101,20 @@ export const AuthState = ({ children }) => {
     }
   };
 
-  // Función para verificar autenticación al cargar la app
   const checkAuth = () => {
+    dispatch({ type: CARGANDO, payload: { cargando: true } });
+    
     const usuarioAuth = JSON.parse(localStorage.getItem("usuarioAuth"));
-    // const id_token = localStorage.getItem("id_token");
-    // const refresh_token = localStorage.getItem("refresh_token");
-
     if (usuarioAuth) {
       dispatch({
         type: IS_AUTH,
         payload: { usuarioAuth, isAuthenticated: true },
       });
+    } else {
+      dispatch({ type: LOGOUT });
     }
+    
+    dispatch({ type: CARGANDO, payload: { cargando: false } });
   };
 
   // Función para logout

@@ -2,25 +2,22 @@
 
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AuthContext from '@/context/auth/auth_context'; 
+import AuthContext from "@/context/auth/auth_context";
+
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, cargando } = useContext(AuthContext);
   const router = useRouter();
 
   useEffect(() => {
     if (!cargando && !isAuthenticated) {
+      console.log("Redirigiendo a login porque no está autenticado.");
       router.push("/login");
     }
-  }, [cargando, isAuthenticated, router]);
+  }, [isAuthenticated, cargando, router]);
 
-  if (cargando) return <p>Cargando...</p>;
+  if (cargando) return <p>Loading...</p>;
 
-  if (!isAuthenticated) {
-    // Opcional: Puedes mostrar un indicador de carga mientras rediriges
-    return <p>Redirigiendo...</p>;
-  }
-
-  return children;
+  return isAuthenticated ? children : null;
 };
 
 export default ProtectedRoute;
