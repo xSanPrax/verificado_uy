@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useContext } from "react";
 import AuthContext from '@/context/auth/auth_context'; 
@@ -6,16 +6,14 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const Register = () => {
-  const { internalRegister, cargando, mensaje } = useContext(AuthContext);
+  const { internalRegister, externalLogin, cargando, mensaje } = useContext(AuthContext);
 
-  // Valores iniciales del formulario
   const initialValues = {
     nombre: "",
     email: "",
     password: "",
   };
 
-  // Esquema de validación usando Yup
   const validationSchema = Yup.object({
     nombre: Yup.string()
       .min(3, "El nombre debe tener al menos 3 caracteres")
@@ -28,7 +26,6 @@ const Register = () => {
       .required("La contraseña es obligatoria"),
   });
 
-  // Función para manejar el envío del formulario
   const onSubmit = async (values, { resetForm }) => {
     await internalRegister(values.nombre, values.email, values.password);
     resetForm();
@@ -50,7 +47,6 @@ const Register = () => {
         >
           {({ isValid, dirty }) => (
             <Form className="space-y-6">
-              {/* Campo de Nombre */}
               <div>
                 <label htmlFor="nombre" className="block text-sm font-medium text-gray-600 dark:text-gray-300">Nombre</label>
                 <Field
@@ -62,8 +58,6 @@ const Register = () => {
                 />
                 <ErrorMessage name="nombre" component="div" className="text-red-500 text-sm mt-1" />
               </div>
-
-              {/* Campo de Email */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-600 dark:text-gray-300">Email</label>
                 <Field
@@ -75,8 +69,6 @@ const Register = () => {
                 />
                 <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
               </div>
-
-              {/* Campo de Contraseña */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-600 dark:text-gray-300">Contraseña</label>
                 <Field
@@ -88,8 +80,6 @@ const Register = () => {
                 />
                 <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
               </div>
-
-              {/* Botón de Envío */}
               <button
                 type="submit"
                 disabled={cargando || !(isValid && dirty)}
@@ -102,6 +92,17 @@ const Register = () => {
             </Form>
           )}
         </Formik>
+        <div className="mt-6">
+          <button
+            onClick={externalLogin}
+            disabled={cargando}
+            className={`w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ${
+              cargando ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {cargando ? "Redirigiendo..." : "Registro con usuario gubuy"}
+          </button>
+        </div>
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-300">
             ¿Ya tienes una cuenta?{" "}

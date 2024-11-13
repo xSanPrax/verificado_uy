@@ -18,11 +18,11 @@ export const AppState = ({ children }) => {
 
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  // Función para crear un usuario
   const createUsuario = async (nombre, email, role) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
-      await axios.post("/admin/crear-usuario", { nombre, email, role });
+      const params = new URLSearchParams({ nombre, email, role });
+      await axios.post(`/admin/crear-usuario?${params.toString()}`);
       mostrarAlerta("Usuario creado exitosamente");
       listUsuarios(); // Actualiza la lista después de crear
     } catch (error) {
@@ -32,12 +32,13 @@ export const AppState = ({ children }) => {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
   };
+  
 
-  // Función para actualizar el rol de un usuario
   const updateUsuarioRole = async (email, nuevoRol) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
-      await axios.put("/admin/modificar-rol", { email, nuevoRol });
+      const params = new URLSearchParams({ email, nuevoRol });
+      await axios.put(`/admin/modificar-rol?${params.toString()}`);
       mostrarAlerta("Rol del usuario modificado exitosamente");
       listUsuarios(); // Actualiza la lista después de modificar
     } catch (error) {

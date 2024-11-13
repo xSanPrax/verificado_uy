@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import { useContext, useState } from "react";
 import AuthContext from '@/context/auth/auth_context'; 
 
 const Login = () => {
-  const { internalLogin, cargando, mensaje } = useContext(AuthContext);
+  const { internalLogin, externalLogin, cargando, mensaje } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -65,6 +65,17 @@ const Login = () => {
             {cargando ? "Iniciando sesión..." : "Login"}
           </button>
         </form>
+        <div className="mt-6">
+          <button
+            onClick={externalLogin}
+            disabled={cargando}
+            className={`w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-200 ${
+              cargando ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {cargando ? "Redirigiendo..." : "Ingreso con usuario gubuy"}
+          </button>
+        </div>
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             ¿No tienes una cuenta?{" "}
