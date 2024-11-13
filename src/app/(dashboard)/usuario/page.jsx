@@ -1,21 +1,22 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "@/context/auth/auth_context";
 import ProtectedRoute from "@/components/ProtectedRoute";
-
+import Donation from "@/components/citizen/Donation"; 
 const Dashboard = () => {
   const { usuarioAuth } = useContext(AuthContext);
+  const [showDonation, setShowDonation] = useState(false);
 
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 py-12">
-          <div className="max-w-7xl mx-auto px-6 text-center">
-            <h1 className="text-4xl font-bold">Bienvenido al Dashboard</h1>
-            <p className="text-xl mt-4">
-              Aquí puedes ver tu información y gestionar tus preferencias
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h1 className="text-4xl font-bold">Bienvenido al Dashboard</h1>
+          <p className="text-xl mt-4">
+            Aquí puedes ver tu información y gestionar tus preferencias
+          </p>
+        </div>
 
         <main className="max-w-7xl mx-auto px-6 py-10 space-y-12">
           {usuarioAuth && (
@@ -62,6 +63,23 @@ const Dashboard = () => {
               ))}
             </div>
           </section>
+
+          {/* Botón para abrir el componente de donación */}
+          <div className="text-center">
+            <button
+              onClick={() => setShowDonation(true)}
+              className="bg-green-500 hover:bg-green-400 text-white font-semibold py-2 px-4 rounded transition"
+            >
+              Hacer Donación
+            </button>
+          </div>
+
+          {/* Mostrar el componente de donación */}
+          {showDonation && (
+            <Donation
+              setShowDonation={setShowDonation} 
+            />
+          )}
         </main>
       </div>
     </ProtectedRoute>
