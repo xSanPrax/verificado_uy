@@ -1,10 +1,10 @@
 "use client";
 
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import axios from "axios";
 import AppContext from "./AppContext";
 import appReducer from "./AppReducer";
-import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO } from "@/app/types/app";
+import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG } from "@/app/types/app";
 
 // Configura la URL base para axios
 axios.defaults.baseURL = "http://localhost:8080";
@@ -14,6 +14,11 @@ export const AppState = ({ children }) => {
     data: null,
     cargando: false,
     mensaje: null,
+    donationConfig: {
+      email: "",
+      bankAccount: "",
+      message: "",
+    },
   };
 
   const [state, dispatch] = useReducer(appReducer, initialState);
@@ -52,10 +57,16 @@ export const AppState = ({ children }) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
       const response = await axios.get("/usuarios/listar-usuarios");
-      dispatch({ type: SET_DATA, payload: response.data });
+      dispatch({
+        type: SET_DATA, // Actualiza solo data
+        payload: { data: response.data },
+      });
     } catch (error) {
       console.error("Error al obtener usuarios:", error);
-      mostrarAlerta("Error al obtener la lista de usuarios");
+      dispatch({
+        type: MOSTRAR_ALERTA,
+        payload: { mensaje: "Error al obtener la lista de usuarios." },
+      });
     } finally {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
@@ -125,12 +136,61 @@ export const AppState = ({ children }) => {
     dispatch({ type: OCULTAR_ALERTA });
   };
 
+  const fetchDonationConfig = async () => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+      const response = await axios.get("/donaciones");
+      dispatch({
+        type: SET_DONATION_CONFIG, // Asegúrate de usar la acción correctamente
+        payload: { donationConfig: response.data },
+      });
+    } catch (error) {
+      console.error("Error al cargar configuración de donación:", error);
+      dispatch({
+        type: MOSTRAR_ALERTA,
+        payload: { mensaje: "No se pudo cargar la configuración de donación." },
+      });
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+
+  const updateDonationConfig = async (donationConfig) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+      const response = await axios.post("/donaciones", donationConfig);
+      dispatch({
+        type: SET_DONATION_CONFIG, // Asegúrate de que esta acción esté definida en tu reducer
+        payload: { donationConfig },
+      });
+      dispatch({
+        type: MOSTRAR_ALERTA,
+        payload: { mensaje: response.data || "Configuración actualizada exitosamente." },
+      });
+    } catch (error) {
+      console.error("Error al actualizar configuración de donación:", error);
+      dispatch({
+        type: MOSTRAR_ALERTA,
+        payload: { mensaje: "Error al guardar configuración de donación." },
+      });
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+  
+
+  useEffect(() => {
+    fetchDonationConfig(); // Cargar la configuración al iniciar
+  }, []);
+
+
   return (
     <AppContext.Provider
       value={{
         data: state.data,
         cargando: state.cargando,
         mensaje: state.mensaje,
+        donationConfig: state.donationConfig,
         createUsuario,
         updateUsuarioRole,
         listUsuarios,
@@ -140,6 +200,8 @@ export const AppState = ({ children }) => {
         clearData,
         mostrarAlerta,
         ocultarAlerta,
+        fetchDonationConfig, 
+        updateDonationConfig, 
       }}
     >
       {children}
