@@ -32,7 +32,6 @@ export const AppState = ({ children }) => {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
   };
-  
 
   const updateUsuarioRole = async (email, nuevoRol) => {
     try {
@@ -49,7 +48,6 @@ export const AppState = ({ children }) => {
     }
   };
 
-  // Función para listar usuarios
   const listUsuarios = async () => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
@@ -63,17 +61,66 @@ export const AppState = ({ children }) => {
     }
   };
 
-  // Función para limpiar datos
+  const crearNodoPeriferico = async (name, url, verificationType) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+      await axios.post("/nodo-periferico/crear", {
+        name,
+        url,
+        verificationType,
+      });
+      mostrarAlerta("Nodo periférico creado exitosamente.");
+    } catch (error) {
+      console.error("Error al crear el nodo periférico:", error);
+      mostrarAlerta(
+        error.response?.data?.message || "Error al crear el nodo periférico."
+      );
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+
+  const obtenerNodoPerifericoPorId = async (id) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+      const response = await axios.get(`/nodo-periferico/${id}`);
+      dispatch({ type: SET_DATA, payload: response.data });
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener el nodo periférico:", error);
+      mostrarAlerta(
+        error.response?.data?.message || "Error al obtener el nodo periférico."
+      );
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+
+  const validarConectividadNodo = async (url) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+      const response = await axios.get(`/nodo-periferico/validar?url=${encodeURIComponent(url)}`);
+      return response.data.success;
+    } catch (error) {
+      console.error("Error al validar la conectividad del nodo periférico:", error);
+      mostrarAlerta(
+        error.response?.data?.message ||
+          "Error al validar la conectividad del nodo periférico."
+      );
+      return false;
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+
   const clearData = () => {
     dispatch({ type: CLEAR_DATA });
   };
 
-  // Función para mostrar alerta
   const mostrarAlerta = (mensaje) => {
     dispatch({ type: MOSTRAR_ALERTA, payload: { mensaje } });
   };
 
-  // Función para ocultar alerta
   const ocultarAlerta = () => {
     dispatch({ type: OCULTAR_ALERTA });
   };
@@ -87,6 +134,9 @@ export const AppState = ({ children }) => {
         createUsuario,
         updateUsuarioRole,
         listUsuarios,
+        crearNodoPeriferico,
+        obtenerNodoPerifericoPorId,
+        validarConectividadNodo,
         clearData,
         mostrarAlerta,
         ocultarAlerta,
