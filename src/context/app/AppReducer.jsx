@@ -1,11 +1,16 @@
-import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO } from "@/app/types/app";
+import { SET_DATA, SET_DONATION_CONFIG, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO } from "@/app/types/app";
 
 export default (state, action) => {
   switch (action.type) {
-    case SET_DATA:
+    case SET_DONATION_CONFIG: // Manejar solo donationConfig
       return {
         ...state,
-        data: action.payload,
+        donationConfig: action.payload.donationConfig || state.donationConfig,
+      };
+    case SET_DATA: // Manejar solo data
+      return {
+        ...state,
+        data: action.payload.data || state.data,
       };
     case CLEAR_DATA:
       return {
