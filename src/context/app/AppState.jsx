@@ -181,6 +181,64 @@ export const AppState = ({ children }) => {
   };
   
 
+  const manejarSuscripcion = async (accion, categoria, citizenId) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const endpoint =
+        accion === "suscribirse"
+          ? `/citizen/${citizenId}/suscribirse/${categoria}`
+          : `/citizen/${citizenId}/cancelar-suscripcion/${categoria}`;
+  
+      const response = await axios.post(endpoint);
+  
+      mostrarAlerta(response.data || "Operación realizada exitosamente.");
+    } catch (error) {
+      console.error("Error al manejar la suscripción:", error);
+      mostrarAlerta(error.response?.data || "Error al manejar la suscripción.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+  
+  const obtenerSuscripciones = async (citizenId) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.get(`/citizen/${citizenId}/suscripciones`);
+      dispatch({
+        type: SET_DATA,
+        payload: { data: response.data },
+      });
+    } catch (error) {
+      console.error("Error al obtener suscripciones:", error);
+      mostrarAlerta("Error al obtener las suscripciones.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+  
+  const solicitarVerificacion = async (citizenId, hechoId) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.post(
+        `/citizen/${citizenId}/solicitar-verificacion/${hechoId}`
+      );
+  
+      mostrarAlerta(response.data || "Solicitud de verificación enviada exitosamente.");
+    } catch (error) {
+      console.error("Error al solicitar verificación:", error);
+      mostrarAlerta(
+        error.response?.data || "Error al solicitar la verificación del hecho."
+      );
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+
+
+
   useEffect(() => {
     fetchDonationConfig(); // Cargar la configuración al iniciar
   }, []);
@@ -203,7 +261,10 @@ export const AppState = ({ children }) => {
         mostrarAlerta,
         ocultarAlerta,
         fetchDonationConfig, 
-        updateDonationConfig, 
+        updateDonationConfig,
+        manejarSuscripcion,
+        obtenerSuscripciones,
+        solicitarVerificacion,
       }}
     >
       {children}
