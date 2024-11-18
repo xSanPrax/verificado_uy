@@ -12,6 +12,7 @@ export const AuthState = ({ children }) => {
     isAuthenticated: false,
     cargando: true,
     mensaje: null,
+    role: null
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);

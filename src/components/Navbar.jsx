@@ -14,6 +14,10 @@ const Navbar = () => {
     router.push("/login");
   };
 
+  const handleConsultar = () => {
+    router.push("/chat");
+  };
+
   return (
     <nav className="bg-green-700 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -30,6 +34,11 @@ const Navbar = () => {
               <li className="text-sm text-gray-100">
                 {usuarioAuth.fullName} ({usuarioAuth.email})
               </li>
+              {usuarioAuth && usuarioAuth.role === 'CHECKER' && (
+                  <li className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md cursor-pointer" onClick={handleConsultar}>
+                    Chatear
+                  </li>
+              )}
               <li className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer" onClick={handleLogout}>
                 Cerrar sesión
               </li>
