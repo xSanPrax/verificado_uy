@@ -19,9 +19,36 @@ export const AppState = ({ children }) => {
       bankAccount: "",
       message: "",
     },
+    citizenId: null, 
   };
 
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+
+
+  const obtenerCitizenId = async () => {
+    const email = localStorage.getItem("email");
+    if (!email) {
+      mostrarAlerta("No se encontró un email en el localStorage.");
+      return;
+    }
+
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+      const response = await axios.get("/usuarios/obtener-id-por-email", {
+        params: { email },
+      });
+      dispatch({
+        type: SET_DATA,
+        payload: { citizenId: response.data },
+      });
+    } catch (error) {
+      console.error("Error al obtener el ID del usuario:", error);
+      mostrarAlerta("Error al obtener el ID del usuario.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
 
   // Función para obtener un nodo periférico por ID
   const obtenerNodoPerifericoPorId = async (id) => {
@@ -240,7 +267,8 @@ export const AppState = ({ children }) => {
 
 
   useEffect(() => {
-    fetchDonationConfig(); // Cargar la configuración al iniciar
+    fetchDonationConfig(); // Para las donaciones
+    obtenerCitizenId(); 
   }, []);
 
 
@@ -251,6 +279,7 @@ export const AppState = ({ children }) => {
         cargando: state.cargando,
         mensaje: state.mensaje,
         donationConfig: state.donationConfig,
+        citizenId: state.citizenId,
         createUsuario,
         updateUsuarioRole,
         listUsuarios,
@@ -265,6 +294,7 @@ export const AppState = ({ children }) => {
         manejarSuscripcion,
         obtenerSuscripciones,
         solicitarVerificacion,
+        obtenerCitizenId,
       }}
     >
       {children}

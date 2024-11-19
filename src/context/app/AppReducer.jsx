@@ -2,12 +2,12 @@ import { SET_DATA, SET_DONATION_CONFIG, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALER
 
 export default (state, action) => {
   switch (action.type) {
-    case SET_DONATION_CONFIG: // Manejar solo donationConfig
+    case SET_DONATION_CONFIG: 
       return {
         ...state,
         donationConfig: action.payload.donationConfig || state.donationConfig,
       };
-    case SET_DATA: // Manejar solo data
+    case SET_DATA: 
       return {
         ...state,
         data: action.payload.data || state.data,
@@ -16,6 +16,7 @@ export default (state, action) => {
       return {
         ...state,
         data: null,
+        citizenId: null, 
       };
     case MOSTRAR_ALERTA:
       return {
