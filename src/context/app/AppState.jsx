@@ -19,7 +19,7 @@ export const AppState = ({ children }) => {
       bankAccount: "",
       message: "",
     },
-    citizenId: null, 
+    citizenId: null,
   };
 
   const [state, dispatch] = useReducer(appReducer, initialState);
@@ -27,7 +27,9 @@ export const AppState = ({ children }) => {
 
 
   const obtenerCitizenId = async () => {
-    const email = localStorage.getItem("email");
+    var usuarioAuth = JSON.parse(localStorage.getItem("usuarioAuth"));
+    var email = usuarioAuth["email"];
+    
     if (!email) {
       mostrarAlerta("No se encontró un email en el localStorage.");
       return;
