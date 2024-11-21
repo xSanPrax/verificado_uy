@@ -12,6 +12,7 @@ export const AuthState = ({ children }) => {
     isAuthenticated: false,
     cargando: true,
     mensaje: null,
+    userRole: null,
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);
@@ -83,13 +84,29 @@ export const AuthState = ({ children }) => {
 
       dispatch({
         type: LOGIN,
-        payload: { usuarioAuth: usuario, isAuthenticated: true },
+        payload: { usuarioAuth: usuario, isAuthenticated: true, userRole: usuario.role },
       });
 
       dispatch({
         type: MOSTRAR_ALERTA,
         payload: { mensaje: message },
       });
+
+      switch (usuario.role) {
+        case "ADMIN":
+          window.location.href = "/admin";
+          break;
+        case "CITIZEN":
+          window.location.href = "/usuario";
+          break;
+        case "SUBMITTER":
+          window.location.href = "/submitter";
+          break;
+        default:
+          window.location.href = "/checker";
+          break;
+      }
+
     } catch (error) {
       console.error("Error en el login interno:", error);
       dispatch({
@@ -108,7 +125,7 @@ export const AuthState = ({ children }) => {
     if (usuarioAuth) {
       dispatch({
         type: IS_AUTH,
-        payload: { usuarioAuth, isAuthenticated: true },
+        payload: { usuarioAuth, isAuthenticated: true,userRole: usuarioAuth.role },
       });
     } else {
       dispatch({ type: LOGOUT });
@@ -125,6 +142,7 @@ export const AuthState = ({ children }) => {
     dispatch({ type: LOGOUT });
   };
 
+
   useEffect(() => {
     checkAuth();
   }, []);
@@ -136,6 +154,7 @@ export const AuthState = ({ children }) => {
         isAuthenticated: state.isAuthenticated,
         cargando: state.cargando,
         mensaje: state.mensaje,
+        userRole: state.userRole,
         externalLogin,
         internalRegister,
         internalLogin, // Agregado
