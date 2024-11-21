@@ -221,10 +221,10 @@ export const AppState = ({ children }) => {
   
       const response = await axios.post(endpoint);
   
-      mostrarAlerta(response.data || "Operación realizada exitosamente.");
+      mostrarAlerta(response.data?.message || "Operación realizada exitosamente.");
     } catch (error) {
       console.error("Error al manejar la suscripción:", error);
-      mostrarAlerta(error.response?.data || "Error al manejar la suscripción.");
+      mostrarAlerta(error.response?.data?.message || "Error al manejar la suscripción.");
     } finally {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
@@ -235,10 +235,20 @@ export const AppState = ({ children }) => {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
   
       const response = await axios.get(`/citizen/${citizenId}/suscripciones`);
-      dispatch({
-        type: SET_DATA,
-        payload: { data: response.data },
-      });
+  
+      // Verifica que response.data sea un array
+      if (Array.isArray(response.data)) {
+        dispatch({
+          type: SET_DATA,
+          payload: { data: response.data },
+        });
+      } else {
+        console.warn("La respuesta de suscripciones no es un array:", response.data);
+        dispatch({
+          type: SET_DATA,
+          payload: { data: [] }, // Asigna un array vacío si la respuesta no es válida
+        });
+      }
     } catch (error) {
       console.error("Error al obtener suscripciones:", error);
       mostrarAlerta("Error al obtener las suscripciones.");

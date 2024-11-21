@@ -9,8 +9,13 @@ import UserList from "@/components/admin/UserList";
 import NodoManager from "@/components/nodos/NodoManager";
 import DonationConfig from "@/components/admin/DonationConfig"; 
 const Dashboard = () => {
-  const { usuarioAuth, userRole } = useContext(AuthContext);
-  console.log(userRole)
+  const { userRole } = useContext(AuthContext);
+  const [showCreateUser, setShowCreateUser] = useState(false);
+  const [showUpdateUserRole, setShowUpdateUserRole] = useState(false);
+  const [showUserList, setShowUserList] = useState(false);
+  const [showNodoManager, setShowNodoManager] = useState(false);
+  const [showDonationConfig, setShowDonationConfig] = useState(false); 
+  
 
   // Verificar si el usuario es ADMIN
   if (userRole !== "ADMIN") {
@@ -21,12 +26,6 @@ const Dashboard = () => {
     );
   }
 
-  // Estados para controlar la visibilidad de cada componente
-  const [showCreateUser, setShowCreateUser] = useState(false);
-  const [showUpdateUserRole, setShowUpdateUserRole] = useState(false);
-  const [showUserList, setShowUserList] = useState(false);
-  const [showNodoManager, setShowNodoManager] = useState(false);
-  const [showDonationConfig, setShowDonationConfig] = useState(false); 
 
   return (
     <ProtectedRoute>

@@ -7,9 +7,19 @@ import SubscriptionManager from "@/components/citizen/SubscriptionManager";
 import Donation from "@/components/citizen/Donation";
 
 const Dashboard = () => {
-  const { usuarioAuth } = useContext(AuthContext);
+  const { usuarioAuth, userRole } = useContext(AuthContext);
+
+
   const [showSubscriptionManager, setShowSubscriptionManager] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
+
+  if (userRole !== "CITIZEN" && userRole !== "ADMIN") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+        <h1 className="text-3xl font-bold text-red-600">Acceso denegado</h1>
+      </div>
+    );
+  }
 
   return (
     <ProtectedRoute>
@@ -19,32 +29,10 @@ const Dashboard = () => {
             <h1 className="text-5xl font-bold tracking-tight text-gray-900">
               Bienvenido al Dashboard
             </h1>
-            <p className="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
-              Administra tus preferencias y consulta tu información personal en un entorno seguro y fácil de usar.
-            </p>
           </div>
 
           <main className="space-y-12">
-            {usuarioAuth && (
-              <section className="bg-white rounded-lg shadow-lg p-8">
-                <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-                  Información de Usuario
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-lg text-gray-700">
-                      <span className="font-medium">Nombre:</span> {usuarioAuth.fullName}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-lg text-gray-700">
-                      <span className="font-medium">Email:</span> {usuarioAuth.email}
-                    </p>
-                  </div>
-                </div>
-              </section>
-            )}
-
+            
             <div className="text-center space-y-12">
               <button
                 onClick={() => setShowSubscriptionManager(true)}

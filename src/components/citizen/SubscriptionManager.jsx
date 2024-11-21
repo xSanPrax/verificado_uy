@@ -75,23 +75,30 @@ const SubscriptionManager = ({ setShowSubscriptionManager }) => {
         </button>
 
         {/* Lista de suscripciones */}
-        <ul className="space-y-4">
-          {suscripciones.map((hecho) => (
-            <li
-              key={hecho.id}
-              className="bg-gray-100 rounded-lg shadow-md p-4 hover:shadow-lg transition"
-            >
-              <p className="text-lg font-medium text-gray-800">{hecho.title}</p>
-              <button
-                onClick={() => solicitarVerificacion(citizenId, hecho.id)}
-                className="mt-2 bg-yellow-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-yellow-400 transition"
-                disabled={cargando}
-              >
-                Solicitar Verificación
-              </button>
-            </li>
-          ))}
-        </ul>
+        {Array.isArray(suscripciones) && suscripciones.length > 0 ? (
+          <ul className="space-y-4">
+            {suscripciones.map((hecho) => (
+              hecho.id && hecho.title ? (
+                <li
+                  key={hecho.id}
+                  className="bg-gray-100 rounded-lg shadow-md p-4 hover:shadow-lg transition"
+                >
+                  <p className="text-lg font-medium text-gray-800">{hecho.title}</p>
+                  <button
+                    onClick={() => solicitarVerificacion(citizenId, hecho.id)}
+                    className="mt-2 bg-yellow-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-yellow-400 transition"
+                    disabled={cargando}
+                  >
+                    Solicitar Verificación
+                  </button>
+                </li>
+              ) : null
+            ))}
+          </ul>
+        ) : (
+          <p className="text-center text-gray-600">No hay suscripciones disponibles.</p>
+        )}
+
 
         {/* Mensaje de alerta */}
         {mensaje && (
