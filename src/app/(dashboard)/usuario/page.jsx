@@ -5,14 +5,13 @@ import AuthContext from "@/context/auth/auth_context";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import SubscriptionManager from "@/components/citizen/SubscriptionManager";
 import Donation from "@/components/citizen/Donation";
-
+import HechosTable from "@/components/listados/listarHechos"; 
 const Dashboard = () => {
-  const { usuarioAuth, userRole } = useContext(AuthContext);
-
+  const { userRole } = useContext(AuthContext);
 
   const [showSubscriptionManager, setShowSubscriptionManager] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
-
+  const [showHechosTable, setShowHechosTable] = useState(false); 
   if (userRole !== "CITIZEN" && userRole !== "ADMIN") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
@@ -32,8 +31,7 @@ const Dashboard = () => {
           </div>
 
           <main className="space-y-12">
-            
-            <div className="text-center space-y-12">
+            <div className="text-center space-y-6">
               <button
                 onClick={() => setShowSubscriptionManager(true)}
                 className="inline-block bg-gray-800 text-white text-lg font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition"
@@ -46,14 +44,23 @@ const Dashboard = () => {
               >
                 Hacer Donación
               </button>
+              <button
+                onClick={() => setShowHechosTable(!showHechosTable)}
+                className={`inline-block ${
+                  showHechosTable ? "bg-red-600 hover:bg-red-500" : "bg-green-600 hover:bg-green-500"
+                } text-white text-lg font-semibold py-3 px-6 rounded-lg shadow-md transition`}
+              >
+                {showHechosTable ? "Ocultar Hechos" : "Ver Hechos"}
+              </button>
             </div>
-
 
             {showSubscriptionManager && (
               <SubscriptionManager setShowSubscriptionManager={setShowSubscriptionManager} />
             )}
 
             {showDonation && <Donation setShowDonation={setShowDonation} />}
+
+            {showHechosTable && <HechosTable />}
           </main>
         </div>
       </div>

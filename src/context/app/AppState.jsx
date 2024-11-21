@@ -1,10 +1,10 @@
 "use client";
 
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useCallback } from "react";
 import axios from "axios";
 import AppContext from "./AppContext";
 import appReducer from "./AppReducer";
-import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG } from "@/app/types/app";
+import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG, CARGAR_HECHOS, HECHOS_CARGADOS, ERROR_CARGAR_HECHOS } from "@/app/types/app";
 
 // Configura la URL base para axios
 axios.defaults.baseURL = "http://127.0.0.1:8080";
@@ -20,6 +20,7 @@ export const AppState = ({ children }) => {
       message: "",
     },
     citizenId: null,
+    hechos: [],
   };
 
   const [state, dispatch] = useReducer(appReducer, initialState);
@@ -27,30 +28,37 @@ export const AppState = ({ children }) => {
 
 
   const obtenerCitizenId = async () => {
-    var usuarioAuth = JSON.parse(localStorage.getItem("usuarioAuth"));
-    var email = usuarioAuth["email"];
-    
-    if (!email) {
-      mostrarAlerta("No se encontró un email en el localStorage.");
-      return;
+    const usuarioAuth = localStorage.getItem("usuarioAuth");
+  
+    if (!usuarioAuth) {
+      return; 
     }
-
+  
+    const parsedAuth = JSON.parse(usuarioAuth);
+    const email = parsedAuth?.email;
+  
+    if (!email) {
+      return; 
+    }
+  
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
       const response = await axios.get("/usuarios/obtener-id-por-email", {
         params: { email },
       });
+  
       dispatch({
         type: SET_DATA,
         payload: { citizenId: response.data },
       });
     } catch (error) {
       console.error("Error al obtener el ID del usuario:", error);
-      mostrarAlerta("Error al obtener el ID del usuario.");
     } finally {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
   };
+  
 
   // Función para obtener un nodo periférico por ID
   const obtenerNodoPerifericoPorId = async (id) => {
@@ -277,9 +285,32 @@ export const AppState = ({ children }) => {
   };
 
 
+  const listarHechosDT = useCallback(async () => {
+    try {
+      dispatch({ type: CARGAR_HECHOS });
+  
+      const response = await axios.get("/obtenerHechosDT");
+  
+      dispatch({
+        type: HECHOS_CARGADOS,
+        payload: response.data, // Los hechos transformados en DtHecho
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error("Error al listar los hechos:", error);
+      dispatch({
+        type: ERROR_CARGAR_HECHOS,
+        payload: error.response?.data?.message || "Error al listar los hechos.",
+      });
+      return [];
+    }
+  }, []);
+  
+
 
   useEffect(() => {
-    fetchDonationConfig(); // Para las donaciones
+    fetchDonationConfig(); 
     obtenerCitizenId(); 
   }, []);
 
@@ -292,6 +323,7 @@ export const AppState = ({ children }) => {
         mensaje: state.mensaje,
         donationConfig: state.donationConfig,
         citizenId: state.citizenId,
+        hechos: state.hechos,
         createUsuario,
         updateUsuarioRole,
         listUsuarios,
@@ -307,6 +339,7 @@ export const AppState = ({ children }) => {
         obtenerSuscripciones,
         solicitarVerificacion,
         obtenerCitizenId,
+        listarHechosDT,
       }}
     >
       {children}

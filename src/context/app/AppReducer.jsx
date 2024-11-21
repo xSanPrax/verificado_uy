@@ -1,4 +1,4 @@
-import { SET_DATA, SET_DONATION_CONFIG, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO } from "@/app/types/app";
+import { SET_DATA, SET_DONATION_CONFIG, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, CARGAR_HECHOS, HECHOS_CARGADOS, ERROR_CARGAR_HECHOS } from "@/app/types/app";
 
 export default (state, action) => {
   switch (action.type) {
@@ -32,6 +32,24 @@ export default (state, action) => {
       return {
         ...state,
         cargando: action.payload.cargando,
+      };
+      case CARGAR_HECHOS:
+      return {
+        ...state,
+        cargando: true,
+        mensaje: null,
+      };
+    case HECHOS_CARGADOS:
+      return {
+        ...state,
+        cargando: false,
+        hechos: action.payload, 
+      };
+    case ERROR_CARGAR_HECHOS:
+      return {
+        ...state,
+        cargando: false,
+        mensaje: action.payload, 
       };
     default:
       return state;
