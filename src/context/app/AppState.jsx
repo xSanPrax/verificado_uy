@@ -1,10 +1,10 @@
 "use client";
 
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useCallback } from "react";
 import axios from "axios";
 import AppContext from "./AppContext";
 import appReducer from "./AppReducer";
-import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG } from "@/app/types/app";
+import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG, CARGAR_HECHOS, HECHOS_CARGADOS, ERROR_CARGAR_HECHOS } from "@/app/types/app";
 
 // Configura la URL base para axios
 axios.defaults.baseURL = "http://127.0.0.1:8080";
@@ -19,9 +19,46 @@ export const AppState = ({ children }) => {
       bankAccount: "",
       message: "",
     },
+    citizenId: null,
+    hechos: [],
   };
 
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+
+
+  const obtenerCitizenId = async () => {
+    const usuarioAuth = localStorage.getItem("usuarioAuth");
+  
+    if (!usuarioAuth) {
+      return; 
+    }
+  
+    const parsedAuth = JSON.parse(usuarioAuth);
+    const email = parsedAuth?.email;
+  
+    if (!email) {
+      return; 
+    }
+  
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.get("/usuarios/obtener-id-por-email", {
+        params: { email },
+      });
+  
+      dispatch({
+        type: SET_DATA,
+        payload: { citizenId: response.data },
+      });
+    } catch (error) {
+      console.error("Error al obtener el ID del usuario:", error);
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+  
 
   // Función para obtener un nodo periférico por ID
   const obtenerNodoPerifericoPorId = async (id) => {
@@ -181,8 +218,100 @@ export const AppState = ({ children }) => {
   };
   
 
+  const manejarSuscripcion = async (accion, categoria, citizenId) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const endpoint =
+        accion === "suscribirse"
+          ? `/citizen/${citizenId}/suscribirse/${categoria}`
+          : `/citizen/${citizenId}/cancelar-suscripcion/${categoria}`;
+  
+      const response = await axios.post(endpoint);
+  
+      mostrarAlerta(response.data?.message || "Operación realizada exitosamente.");
+    } catch (error) {
+      console.error("Error al manejar la suscripción:", error);
+      mostrarAlerta(error.response?.data?.message || "Error al manejar la suscripción.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+  
+  const obtenerSuscripciones = async (citizenId) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.get(`/citizen/${citizenId}/suscripciones`);
+  
+      // Verifica que response.data sea un array
+      if (Array.isArray(response.data)) {
+        dispatch({
+          type: SET_DATA,
+          payload: { data: response.data },
+        });
+      } else {
+        console.warn("La respuesta de suscripciones no es un array:", response.data);
+        dispatch({
+          type: SET_DATA,
+          payload: { data: [] }, // Asigna un array vacío si la respuesta no es válida
+        });
+      }
+    } catch (error) {
+      console.error("Error al obtener suscripciones:", error);
+      mostrarAlerta("Error al obtener las suscripciones.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+  
+  const solicitarVerificacion = async (citizenId, hechoId) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.post(
+        `/citizen/${citizenId}/solicitar-verificacion/${hechoId}`
+      );
+  
+      mostrarAlerta(response.data || "Solicitud de verificación enviada exitosamente.");
+    } catch (error) {
+      console.error("Error al solicitar verificación:", error);
+      mostrarAlerta(
+        error.response?.data || "Error al solicitar la verificación del hecho."
+      );
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+
+
+  const listarHechosDT = useCallback(async () => {
+    try {
+      dispatch({ type: CARGAR_HECHOS });
+  
+      const response = await axios.get("/obtenerHechosDT");
+  
+      dispatch({
+        type: HECHOS_CARGADOS,
+        payload: response.data, // Los hechos transformados en DtHecho
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error("Error al listar los hechos:", error);
+      dispatch({
+        type: ERROR_CARGAR_HECHOS,
+        payload: error.response?.data?.message || "Error al listar los hechos.",
+      });
+      return [];
+    }
+  }, []);
+  
+
+
   useEffect(() => {
-    fetchDonationConfig(); // Cargar la configuración al iniciar
+    fetchDonationConfig(); 
+    obtenerCitizenId(); 
   }, []);
 
 
@@ -193,6 +322,8 @@ export const AppState = ({ children }) => {
         cargando: state.cargando,
         mensaje: state.mensaje,
         donationConfig: state.donationConfig,
+        citizenId: state.citizenId,
+        hechos: state.hechos,
         createUsuario,
         updateUsuarioRole,
         listUsuarios,
@@ -203,7 +334,12 @@ export const AppState = ({ children }) => {
         mostrarAlerta,
         ocultarAlerta,
         fetchDonationConfig, 
-        updateDonationConfig, 
+        updateDonationConfig,
+        manejarSuscripcion,
+        obtenerSuscripciones,
+        solicitarVerificacion,
+        obtenerCitizenId,
+        listarHechosDT,
       }}
     >
       {children}
