@@ -14,6 +14,10 @@ const Navbar = () => {
     router.push("/login");
   };
 
+  const handleConsultar = () => {
+    router.push("/chat");
+  };
+
   return (
     <>
       {/* Barra de navegación */}
