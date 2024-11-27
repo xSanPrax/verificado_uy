@@ -289,7 +289,7 @@ export const AppState = ({ children }) => {
     try {
       dispatch({ type: CARGAR_HECHOS });
   
-      const response = await axios.get("/obtenerHechosDT");
+      const response = await axios.get("/hechos/listarHechos");
   
       dispatch({
         type: HECHOS_CARGADOS,
