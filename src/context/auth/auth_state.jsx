@@ -115,7 +115,7 @@ export const AuthState = ({ children }) => {
     }
     
     dispatch({ type: CARGANDO, payload: { cargando: false } });
-  };
+  };  
 
   // Función para logout
   const logout = () => {

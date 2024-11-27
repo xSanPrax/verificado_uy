@@ -3,10 +3,13 @@
 import { useContext, useState } from "react";
 import AuthContext from "@/context/auth/auth_context";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import Donation from "@/components/citizen/Donation"; 
+import Donation from "@/components/citizen/Donation";
+import ReportViewer from "@/components/citizen/ReportViewer"; // Importa el componente ReportViewer
+
 const Dashboard = () => {
   const { usuarioAuth } = useContext(AuthContext);
-  const [showDonation, setShowDonation] = useState(false);
+  const [showDonation, setShowDonation] = useState(false); // Estado para mostrar el componente de donación
+  const [showReport, setShowReport] = useState(false); // Estado para mostrar el componente de ReportViewer
 
   return (
     <ProtectedRoute>
@@ -67,7 +70,7 @@ const Dashboard = () => {
           {/* Botón para abrir el componente de donación */}
           <div className="text-center">
             <button
-              onClick={() => setShowDonation(true)}
+              onClick={() => setShowDonation(true)} // Cambiar el estado para mostrar el componente de donación
               className="bg-green-500 hover:bg-green-400 text-white font-semibold py-2 px-4 rounded transition"
             >
               Hacer Donación
@@ -77,7 +80,24 @@ const Dashboard = () => {
           {/* Mostrar el componente de donación */}
           {showDonation && (
             <Donation
-              setShowDonation={setShowDonation} 
+              setShowDonation={setShowDonation} // Pasamos la función para cerrar el componente de donación
+            />
+          )}
+
+          {/* Botón para abrir el componente de ReportViewer */}
+          <div className="text-center">
+            <button
+              onClick={() => setShowReport(true)} // Cambiar el estado para mostrar el componente de ReportViewer
+              className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 rounded transition"
+            >
+              Ver Reporte
+            </button>
+          </div>
+
+          {/* Mostrar el componente de ReportViewer */}
+          {showReport && (
+            <ReportViewer
+              setShowReport={setShowReport} // Pasamos la función para cerrar el componente de ReportViewer
             />
           )}
         </main>

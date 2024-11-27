@@ -4,7 +4,7 @@ import { useReducer, useEffect } from "react";
 import axios from "axios";
 import AppContext from "./AppContext";
 import appReducer from "./AppReducer";
-import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG } from "@/app/types/app";
+import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG, SET_REPORTES_DATA } from "@/app/types/app";
 
 // Configura la URL base para axios
 axios.defaults.baseURL = "http://127.0.0.1:8080";
@@ -179,8 +179,101 @@ export const AppState = ({ children }) => {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
   };
-  
 
+  // Agregar funciones para manejar reportes
+  const fetchHechosVerificadosEntreFechas = async (desde, hasta) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.get(
+        `/reportes/getHechosVerificadosEntreFechas?desde=${desde}&hasta=${hasta}`
+      );
+  
+      dispatch({ type: SET_REPORTES_DATA, payload: { data: response.data } });
+    } catch (error) {
+      console.error("Error al obtener hechos verificados:", error);
+      mostrarAlerta("Error al cargar hechos verificados.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+  
+  const fetchTopCategoriasDeHechos = async (desde, hasta) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.get(
+        `/reportes/getTopCategoriasDeHechos?desde=${desde}&hasta=${hasta}`
+      );
+  
+      dispatch({ type: SET_REPORTES_DATA, payload: { data: response.data } });
+    } catch (error) {
+      console.error("Error al obtener top de categorías:", error);
+      mostrarAlerta("Error al cargar el top de categorías.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };  
+
+  // Nueva función: Crear un hecho
+  const crearHecho = async (description, category) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      // Obtén el rol del usuario desde localStorage
+      const usuarioAuth = localStorage.getItem("usuarioAuth");
+      if (!usuarioAuth) {
+        console.error("No se encontró información de usuario en localStorage.");
+        mostrarAlerta("Error: No se encontró información del usuario.");
+        return;
+      }
+  
+      const parsedAuth = JSON.parse(usuarioAuth);
+      const role = parsedAuth?.role;
+  
+      if (!role) {
+        console.error("El usuario no tiene un rol asignado.");
+        mostrarAlerta("Error: No se pudo determinar el rol del usuario.");
+        return;
+      }
+  
+      // Determina el estado según el rol
+      const status = role === "SUBMITTER" ? "PENDIENTE" : "NUEVO";
+  
+      // Realiza la solicitud para crear el hecho
+      const response = await axios.post(
+        "/hechos/crear",
+        { description, category, status },
+        { headers: { "Content-Type": "application/json" } }
+      );
+  
+      mostrarAlerta("Hecho creado exitosamente");
+      return response.data;
+    } catch (error) {
+      console.error("Error al crear el hecho:", error);
+      mostrarAlerta("Error al crear el hecho");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };  
+
+  // Nueva función: Obtener hechos en estado 'nuevo'
+  const obtenerSolicitudesNuevas = async () => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } }); // Establecer estado cargando en true
+      const response = await axios.get("/submitter/solicitudes-nuevas");
+      console.log("Respuesta de la API:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error en la solicitud de hechos nuevos:", error);
+      mostrarAlerta("Error al obtener los hechos nuevos.");
+      return []; // Devuelve un array vacío si la solicitud falla
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } }); // Establecer estado cargando en false
+    }
+  };
+  
+  
   useEffect(() => {
     fetchDonationConfig(); // Cargar la configuración al iniciar
   }, []);
@@ -203,7 +296,11 @@ export const AppState = ({ children }) => {
         mostrarAlerta,
         ocultarAlerta,
         fetchDonationConfig, 
-        updateDonationConfig, 
+        updateDonationConfig,
+        fetchTopCategoriasDeHechos,
+        fetchHechosVerificadosEntreFechas,
+        crearHecho,
+        obtenerSolicitudesNuevas,
       }}
     >
       {children}
