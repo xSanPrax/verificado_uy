@@ -61,6 +61,12 @@ const Navbar = () => {
             >
               Checker
             </li>
+            <li
+              className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
+              onClick={handleConsultar}
+            >
+              Consultar
+            </li>
           </ul>
 
           {/* Información del usuario */}
