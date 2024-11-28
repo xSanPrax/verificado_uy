@@ -7,6 +7,7 @@ import authReducer from "./auth_reducer";
 import { MOSTRAR_ALERTA, CARGANDO, LOGIN, LOGOUT, IS_AUTH } from "@/app/types/app";
 
 const BASE_URL = "https://docker4363-verificando-back.web.elasticloud.uy";
+axios.defaults.withCredentials = true;
 
 export const AuthState = ({ children }) => {
   const initialState = {
