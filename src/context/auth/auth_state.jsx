@@ -6,7 +6,7 @@ import AuthContext from "./auth_context";
 import authReducer from "./auth_reducer";
 import { MOSTRAR_ALERTA, CARGANDO, LOGIN, LOGOUT, IS_AUTH } from "@/app/types/app";
 
-const BASE_URL = "http://docker4363-verificando-back.web.elasticloud.uy";
+const BASE_URL = "https://docker4363-verificando-back.web.elasticloud.uy";
 
 export const AuthState = ({ children }) => {
   const initialState = {
