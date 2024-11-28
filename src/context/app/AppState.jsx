@@ -8,6 +8,7 @@ import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DON
 
 // Configura la URL base para axios
 axios.defaults.baseURL = "https://docker4363-verificando-back.web.elasticloud.uy";
+axios.defaults.withCredentials = true;
 
 export const AppState = ({ children }) => {
   const initialState = {
