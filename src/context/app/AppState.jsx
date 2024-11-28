@@ -7,7 +7,7 @@ import appReducer from "./AppReducer";
 import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG, CARGAR_HECHOS, HECHOS_CARGADOS, ERROR_CARGAR_HECHOS } from "@/app/types/app";
 
 // Configura la URL base para axios
-axios.defaults.baseURL = "http://127.0.0.1:8080";
+axios.defaults.baseURL = "http://docker4363-verificando-back.web.elasticloud.uy";
 
 export const AppState = ({ children }) => {
   const initialState = {
@@ -293,7 +293,7 @@ export const AppState = ({ children }) => {
   
       dispatch({
         type: HECHOS_CARGADOS,
-        payload: response.data, // Los hechos transformados en DtHecho
+        payload: response.data, 
       });
   
       return response.data;
