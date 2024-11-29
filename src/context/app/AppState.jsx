@@ -220,30 +220,11 @@ export const AppState = ({ children }) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
   
-      // Obtén el rol del usuario desde localStorage
-      const usuarioAuth = localStorage.getItem("usuarioAuth");
-      if (!usuarioAuth) {
-        console.error("No se encontró información de usuario en localStorage.");
-        mostrarAlerta("Error: No se encontró información del usuario.");
-        return;
-      }
-  
-      const parsedAuth = JSON.parse(usuarioAuth);
-      const role = parsedAuth?.role;
-  
-      if (!role) {
-        console.error("El usuario no tiene un rol asignado.");
-        mostrarAlerta("Error: No se pudo determinar el rol del usuario.");
-        return;
-      }
-  
-      // Determina el estado según el rol
-      const status = role === "SUBMITTER" ? "PENDIENTE" : "NUEVO";
-  
+        
       // Realiza la solicitud para crear el hecho
       const response = await axios.post(
         "/hechos/crear",
-        { description, category, status },
+        { description, category },
         { headers: { "Content-Type": "application/json" } }
       );
   
