@@ -125,7 +125,7 @@ export const AuthState = ({ children }) => {
     }
     
     dispatch({ type: CARGANDO, payload: { cargando: false } });
-  };
+  };  
 
   const logout = () => {
     localStorage.removeItem("usuarioAuth");

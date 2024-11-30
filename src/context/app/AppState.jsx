@@ -4,7 +4,8 @@ import { useReducer, useEffect, useCallback } from "react";
 import axios from "axios";
 import AppContext from "./AppContext";
 import appReducer from "./AppReducer";
-import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG, CARGAR_HECHOS, HECHOS_CARGADOS, ERROR_CARGAR_HECHOS } from "@/app/types/app";
+
+import { SET_DATA, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_DONATION_CONFIG, CARGAR_HECHOS, HECHOS_CARGADOS, ERROR_CARGAR_HECHOS, SET_REPORTES_DATA } from "@/app/types/app";
 
 // Configura la URL base para axios
 axios.defaults.baseURL = "https://docker4363-verificando-back.web.elasticloud.uy";
@@ -105,12 +106,16 @@ export const AppState = ({ children }) => {
     }
   };
 
-  const listUsuarios = async () => {
+  const listUsuarios = async (rol = null) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
-      const response = await axios.get("/usuarios/listar-usuarios");
+      
+      const response = rol 
+        ? await axios.get("/usuarios/listar-usuarios", { params: { rol } }) 
+        : await axios.get("/usuarios/listar-usuarios");
+      
       dispatch({
-        type: SET_DATA, // Actualiza solo data
+        type: SET_DATA,
         payload: { data: response.data },
       });
     } catch (error) {
@@ -217,9 +222,82 @@ export const AppState = ({ children }) => {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
   };
-  
 
-  const manejarSuscripcion = async (accion, categoria, citizenId) => {
+  // Agregar funciones para manejar reportes
+  const fetchHechosVerificadosEntreFechas = async (desde, hasta) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.get(
+        `/reportes/getHechosVerificadosEntreFechas?desde=${desde}&hasta=${hasta}`
+      );
+  
+      dispatch({ type: SET_REPORTES_DATA, payload: { data: response.data } });
+    } catch (error) {
+      console.error("Error al obtener hechos verificados:", error);
+      mostrarAlerta("Error al cargar hechos verificados.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };
+  
+  const fetchTopCategoriasDeHechos = async (desde, hasta) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+      const response = await axios.get(
+        `/reportes/getTopCategoriasDeHechos?desde=${desde}&hasta=${hasta}`
+      );
+  
+      dispatch({ type: SET_REPORTES_DATA, payload: { data: response.data } });
+    } catch (error) {
+      console.error("Error al obtener top de categorías:", error);
+      mostrarAlerta("Error al cargar el top de categorías.");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };  
+
+  // Nueva función: Crear un hecho
+  const crearHecho = async (description, category) => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
+        
+      // Realiza la solicitud para crear el hecho
+      const response = await axios.post(
+        "/hechos/crear",
+        { description, category },
+        { headers: { "Content-Type": "application/json" } }
+      );
+  
+      mostrarAlerta("Hecho creado exitosamente");
+      return response.data;
+    } catch (error) {
+      console.error("Error al crear el hecho:", error);
+      mostrarAlerta("Error al crear el hecho");
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
+    }
+  };  
+
+  // Nueva función: Obtener hechos en estado 'nuevo'
+  const obtenerSolicitudesNuevas = async () => {
+    try {
+      dispatch({ type: CARGANDO, payload: { cargando: true } }); // Establecer estado cargando en true
+      const response = await axios.get("/submitter/solicitudes-nuevas");
+      console.log("Respuesta de la API:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error en la solicitud de hechos nuevos:", error);
+      mostrarAlerta("Error al obtener los hechos nuevos.");
+      return []; // Devuelve un array vacío si la solicitud falla
+    } finally {
+      dispatch({ type: CARGANDO, payload: { cargando: false } }); // Establecer estado cargando en false
+    }
+  };
+  
+   const manejarSuscripcion = async (accion, categoria, citizenId) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
   
@@ -309,7 +387,6 @@ export const AppState = ({ children }) => {
   }, []);
   
 
-
   useEffect(() => {
     fetchDonationConfig(); 
     obtenerCitizenId(); 
@@ -336,6 +413,10 @@ export const AppState = ({ children }) => {
         ocultarAlerta,
         fetchDonationConfig, 
         updateDonationConfig,
+        fetchTopCategoriasDeHechos,
+        fetchHechosVerificadosEntreFechas,
+        crearHecho,
+        obtenerSolicitudesNuevas,
         manejarSuscripcion,
         obtenerSuscripciones,
         solicitarVerificacion,
