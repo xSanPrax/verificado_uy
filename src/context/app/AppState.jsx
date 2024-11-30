@@ -258,44 +258,49 @@ export const AppState = ({ children }) => {
     }
   };  
 
-  // Nueva función: Crear un hecho
-  const crearHecho = async (description, category) => {
+  const crearHecho = useCallback(async (description, category) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
   
-        
-      // Realiza la solicitud para crear el hecho
       const response = await axios.post(
         "/hechos/crear",
         { description, category },
         { headers: { "Content-Type": "application/json" } }
       );
   
-      mostrarAlerta("Hecho creado exitosamente");
+      mostrarAlerta("Hecho creado exitosamente.");
       return response.data;
     } catch (error) {
-      console.error("Error al crear el hecho:", error);
-      mostrarAlerta("Error al crear el hecho");
+      const errorMessage =
+        error.response?.data?.message || "Error al crear el hecho.";
+      console.error("Error al crear el hecho:", errorMessage);
+      mostrarAlerta(errorMessage);
+      return null;
     } finally {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
-  };  
+  }, [dispatch, mostrarAlerta]);
+  
 
-  // Nueva función: Obtener hechos en estado 'nuevo'
-  const obtenerSolicitudesNuevas = async () => {
+  const obtenerSolicitudesNuevas = useCallback(async (dispatch, mostrarAlerta) => {
     try {
-      dispatch({ type: CARGANDO, payload: { cargando: true } }); // Establecer estado cargando en true
+      dispatch({ type: CARGANDO, payload: { cargando: true } });
+  
       const response = await axios.get("/submitter/solicitudes-nuevas");
       console.log("Respuesta de la API:", response.data);
+  
       return response.data;
     } catch (error) {
-      console.error("Error en la solicitud de hechos nuevos:", error);
-      mostrarAlerta("Error al obtener los hechos nuevos.");
-      return []; // Devuelve un array vacío si la solicitud falla
+      const errorMessage =
+        error.response?.data?.message || "Error al obtener los hechos nuevos.";
+      console.error("Error en la solicitud de hechos nuevos:", errorMessage);
+      mostrarAlerta(errorMessage);
+      return [];
     } finally {
-      dispatch({ type: CARGANDO, payload: { cargando: false } }); // Establecer estado cargando en false
+      dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
-  };
+  }, []);
+
   
    const manejarSuscripcion = async (accion, categoria, citizenId) => {
     try {
@@ -363,8 +368,7 @@ export const AppState = ({ children }) => {
     }
   };
 
-
-  const listarHechosDT = useCallback(async () => {
+  const listarHechosDT = useCallback(async (dispatch) => {
     try {
       dispatch({ type: CARGAR_HECHOS });
   
@@ -372,7 +376,7 @@ export const AppState = ({ children }) => {
   
       dispatch({
         type: HECHOS_CARGADOS,
-        payload: response.data, 
+        payload: response.data,
       });
   
       return response.data;
@@ -385,6 +389,7 @@ export const AppState = ({ children }) => {
       return [];
     }
   }, []);
+
   
 
   useEffect(() => {
