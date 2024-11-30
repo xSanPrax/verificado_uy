@@ -67,12 +67,16 @@ export const AppState = ({ children }) => {
     }
   };
 
-  const listUsuarios = async () => {
+  const listUsuarios = async (rol = null) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
-      const response = await axios.get("/usuarios/listar-usuarios");
+      
+      const response = rol 
+        ? await axios.get("/usuarios/listar-usuarios", { params: { rol } }) 
+        : await axios.get("/usuarios/listar-usuarios");
+      
       dispatch({
-        type: SET_DATA, // Actualiza solo data
+        type: SET_DATA,
         payload: { data: response.data },
       });
     } catch (error) {
