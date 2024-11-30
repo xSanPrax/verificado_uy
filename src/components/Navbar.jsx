@@ -26,54 +26,57 @@ const Navbar = () => {
           {/* Logo e Identidad */}
           <div className="flex items-center space-x-3">
             <Image
-              src="/logo.png"
-              alt="Verificado Uy Logo"
+              src="/hecho.png"
+              alt="Verificando Uy Logo"
               width={40}
               height={40}
-              className="mr-2"
+              //className="mr-2"
             />
-            <h1 className="text-2xl font-bold whitespace-nowrap">Verificado Uy</h1>
+            <h1 className="text-2xl font-bold whitespace-nowrap">VerificandoUY</h1>
           </div>
 
           {/* Navegación */}
           <ul className="flex flex-wrap space-x-4 items-center">
             <li
-              className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
-              onClick={() => router.push("/admin")}
+                className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
+                onClick={() => router.push("/admin")}
             >
               Admin
             </li>
             <li
-              className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
-              onClick={() => router.push("/usuario")}
+                className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
+                onClick={() => router.push("/usuario")}
             >
               Inicio
             </li>
             <li
-              className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
-              onClick={() => router.push("/submitter")}
+                className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
+                onClick={() => router.push("/submitter")}
             >
               Submitter
             </li>
             <li
-              className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
-              onClick={() => router.push("/checker")}
+                className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
+                onClick={() => router.push("/checker")}
             >
               Checker
             </li>
-            <li
-              className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
-              onClick={handleConsultar}
-            >
-              Consultar
-            </li>
+            {usuarioAuth && usuarioAuth.role === "CHECKER" ? (
+                <li
+                    className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
+                    onClick={handleConsultar}
+                >
+                  Consultar
+                </li>
+            ) : null}
+
           </ul>
 
           {/* Información del usuario */}
           <div className="flex flex-wrap items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-4 sm:mt-0">
             {usuarioAuth ? (
-              <>
-                <div className="text-sm text-gray-100 text-center sm:text-right">
+                <>
+                  <div className="text-sm text-gray-100 text-center sm:text-right">
                   <p className="font-medium">{usuarioAuth.email}</p>
                   <p className="text-gray-300">{usuarioAuth.role}</p>
                 </div>

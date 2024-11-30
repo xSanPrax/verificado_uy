@@ -51,7 +51,7 @@ const ChatPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center  bg-gray-100">
+        <div className="flex items-center justify-center  bg-gray-100 mt-20">
             <div className="chat-container max-w-lg w-full bg-white shadow-lg rounded-lg overflow-hidden">
                 <div className="chat-header p-4 bg-green-600 dark:bg-gray-900 text-white text-center">
                     <h2>Checkers Chat</h2>
