@@ -1,13 +1,13 @@
-import { SET_DATA, SET_DONATION_CONFIG, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, SET_REPORTES_DATA, CARGAR_HECHOS_NUEVOS } from "@/app/types/app";
+import { SET_DATA, SET_DONATION_CONFIG, CLEAR_DATA, MOSTRAR_ALERTA, OCULTAR_ALERTA, CARGANDO, CARGAR_HECHOS, HECHOS_CARGADOS, ERROR_CARGAR_HECHOS, SET_REPORTES_DATA } from "@/app/types/app";
 
 export default (state, action) => {
   switch (action.type) {
-    case SET_DONATION_CONFIG: // Manejar solo donationConfig
+    case SET_DONATION_CONFIG: 
       return {
         ...state,
         donationConfig: action.payload.donationConfig || state.donationConfig,
       };
-    case SET_DATA: // Manejar los hechos
+    case SET_DATA: 
       return {
         ...state,
         hechos: action.payload.data || state.hechos,
@@ -16,6 +16,7 @@ export default (state, action) => {
       return {
         ...state,
         data: null,
+        citizenId: null, 
       };
     case MOSTRAR_ALERTA:
       return {
@@ -41,6 +42,23 @@ export default (state, action) => {
       return {
         ...state,
         data: action.payload.data,
+      case CARGAR_HECHOS:
+      return {
+        ...state,
+        cargando: true,
+        mensaje: null,
+      };
+    case HECHOS_CARGADOS:
+      return {
+        ...state,
+        cargando: false,
+        hechos: action.payload, 
+      };
+    case ERROR_CARGAR_HECHOS:
+      return {
+        ...state,
+        cargando: false,
+        mensaje: action.payload, 
       };
     default:
       return state;

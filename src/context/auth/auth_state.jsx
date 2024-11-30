@@ -4,7 +4,10 @@ import { useReducer, useEffect } from "react";
 import axios from "axios"; 
 import AuthContext from "./auth_context";
 import authReducer from "./auth_reducer";
-import { MOSTRAR_ALERTA, CARGANDO, LOGIN, LOGOUT, IS_AUTH, OCULTAR_ALERTA } from "@/app/types/app";
+import { MOSTRAR_ALERTA, CARGANDO, LOGIN, LOGOUT, IS_AUTH } from "@/app/types/app";
+
+const BASE_URL = "https://docker4363-verificando-back.web.elasticloud.uy";
+axios.defaults.withCredentials = true;
 
 export const AuthState = ({ children }) => {
   const initialState = {
@@ -12,15 +15,15 @@ export const AuthState = ({ children }) => {
     isAuthenticated: false,
     cargando: true,
     mensaje: null,
+    userRole: null,
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Función para manejar el flujo de login externo
   const externalLogin = async () => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
-      window.location.href = "http://localhost:8080/login";
+      window.location.href = `${BASE_URL}/login`;
     } catch (error) {
       console.error("Error iniciando el flujo de autenticación:", error);
       dispatch({
@@ -32,24 +35,22 @@ export const AuthState = ({ children }) => {
     }
   };
 
-  // Función para registro interno
   const internalRegister = async (nombre, email, password) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
 
-      const response = await axios.post("http://localhost:8080/usuarios/registro", {
+      const response = await axios.post(`${BASE_URL}/usuarios/registro`, {
         nombre,
         email,
         password,
       });
 
+      console.log(response.message)
+
       dispatch({
         type: MOSTRAR_ALERTA,
         payload: { mensaje: "Usuario registrado exitosamente." },
       });
-
-      // Opcional: Puedes iniciar sesión automáticamente después del registro
-      // internalLogin(email, password);
     } catch (error) {
       console.error("Error en el registro interno:", error);
       dispatch({
@@ -61,35 +62,44 @@ export const AuthState = ({ children }) => {
     }
   };
 
-  // Función para login interno
   const internalLogin = async (email, password) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
 
-      const response = await axios.post("http://localhost:8080/usuarios/login", {
+      const response = await axios.post(`${BASE_URL}/usuarios/login`, {
         email,
         password,
       });
 
       const { message, usuario } = response.data;
 
-      // Opcional: Si tu backend devuelve tokens, puedes almacenarlos aquí
-      // const { id_token, refresh_token } = response.data;
-
-      // Almacenar información del usuario en localStorage para persistencia
       localStorage.setItem("usuarioAuth", JSON.stringify(usuario));
-      // localStorage.setItem("id_token", id_token);
-      // localStorage.setItem("refresh_token", refresh_token);
 
       dispatch({
         type: LOGIN,
-        payload: { usuarioAuth: usuario, isAuthenticated: true },
+        payload: { usuarioAuth: usuario, isAuthenticated: true, userRole: usuario.role },
       });
 
       dispatch({
         type: MOSTRAR_ALERTA,
         payload: { mensaje: message },
       });
+
+      switch (usuario.role) {
+        case "ADMIN":
+          window.location.href = "/admin";
+          break;
+        case "CITIZEN":
+          window.location.href = "/usuario";
+          break;
+        case "SUBMITTER":
+          window.location.href = "/submitter";
+          break;
+        default:
+          window.location.href = "/checker";
+          break;
+      }
+
     } catch (error) {
       console.error("Error en el login interno:", error);
       dispatch({
@@ -108,7 +118,7 @@ export const AuthState = ({ children }) => {
     if (usuarioAuth) {
       dispatch({
         type: IS_AUTH,
-        payload: { usuarioAuth, isAuthenticated: true },
+        payload: { usuarioAuth, isAuthenticated: true, userRole: usuarioAuth.role },
       });
     } else {
       dispatch({ type: LOGOUT });
@@ -117,11 +127,8 @@ export const AuthState = ({ children }) => {
     dispatch({ type: CARGANDO, payload: { cargando: false } });
   };  
 
-  // Función para logout
   const logout = () => {
     localStorage.removeItem("usuarioAuth");
-    // localStorage.removeItem("id_token");
-    // localStorage.removeItem("refresh_token");
     dispatch({ type: LOGOUT });
   };
 
@@ -136,10 +143,11 @@ export const AuthState = ({ children }) => {
         isAuthenticated: state.isAuthenticated,
         cargando: state.cargando,
         mensaje: state.mensaje,
+        userRole: state.userRole,
         externalLogin,
         internalRegister,
-        internalLogin, // Agregado
-        logout, // Agregado
+        internalLogin,
+        logout,
       }}
     >
       {children}

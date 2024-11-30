@@ -14,20 +14,23 @@ import {
               return {
                  ...state,
                   usuarioAuth: action.payload.usuarioAuth,
-                  isAuthenticated: action.payload.isAuthenticated
+                  isAuthenticated: action.payload.isAuthenticated,
+                  userRole: action.payload.usuarioAuth.role
               }
           case IS_AUTH:
               return {
                  ...state,
                   usuarioAuth: action.payload.usuarioAuth,
-                  isAuthenticated: action.payload.isAuthenticated
+                  isAuthenticated: action.payload.isAuthenticated,
+                  userRole: action.payload.usuarioAuth.role
               }
           case LOGOUT:
               return {
                   ...state,
                   usuarioAuth: null,
                   isAuthenticated: false,
-                  mensaje: null
+                  mensaje: null,
+                  userRole : null
               };
           case MOSTRAR_ALERTA:
               return{
