@@ -54,7 +54,9 @@ export default (state, action) => {
       return {
         ...state,
         cargando: false,
-        hechos: action.payload,
+        hechos: action.payload.hechos, 
+        totalPages: action.payload.totalPages, 
+        currentPage: action.payload.currentPage, 
       };
     case ERROR_CARGAR_HECHOS:
       return {
