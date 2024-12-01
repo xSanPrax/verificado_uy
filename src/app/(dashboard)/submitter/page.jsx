@@ -1,15 +1,13 @@
 "use client";
 
-import { useContext, useState } from "react";
-import AuthContext from "@/context/auth/auth_context";
+import { useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import CrearHecho from "@/components/submitter/CrearHecho";
-import GestionarHechosNuevos from "@/components/submitter/GestionarHechosNuevos";
+import HechosTable from "@/components/listados/listarHechos";
 
 const Dashboard = () => {
-  const { usuarioAuth } = useContext(AuthContext); // Se mantiene la información del usuario
-  const [showCrearHecho, setShowCrearHecho] = useState(false);
-  const [showGestionarHechos, setShowGestionarHechos] = useState(false);
+  const [showCrearHecho, setShowCrearHecho] = useState(false); // Estado para mostrar el formulario de creación
+  const [showListarHechos, setShowListarHechos] = useState(false); // Estado para mostrar el listado de hechos
 
   return (
     <ProtectedRoute>
@@ -17,29 +15,11 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h1 className="text-4xl font-bold">Dashboard del Submitter</h1>
           <p className="text-xl mt-4">
-            Administra los hechos y verifica solicitudes desde este panel.
+            Administra y visualiza los hechos desde este panel.
           </p>
         </div>
 
         <main className="max-w-7xl mx-auto px-6 py-10 space-y-12">
-          {usuarioAuth && (
-            <section className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-              <h2 className="text-2xl font-semibold mb-4">Información de Usuario</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-lg">
-                    <span className="font-semibold">Nombre:</span> {usuarioAuth.fullName}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-lg">
-                    <span className="font-semibold">Email:</span> {usuarioAuth.email}
-                  </p>
-                </div>
-              </div>
-            </section>
-          )}
-
           <section className="space-y-6">
             <div className="text-center">
               <button
@@ -50,22 +30,22 @@ const Dashboard = () => {
               </button>
             </div>
 
-            {showCrearHecho && (
-              <CrearHecho setShowCrearHecho={setShowCrearHecho} />
-            )}
+            {showCrearHecho && <CrearHecho setShowCrearHecho={setShowCrearHecho} />}
 
             <div className="text-center">
               <button
-                onClick={() => setShowGestionarHechos(true)}
-                className="bg-green-500 hover:bg-green-400 text-white font-semibold py-2 px-4 rounded transition"
+                onClick={() => setShowListarHechos(!showListarHechos)}
+                className={`${
+                  showListarHechos
+                    ? "bg-red-500 hover:bg-red-400"
+                    : "bg-green-500 hover:bg-green-400"
+                } text-white font-semibold py-2 px-4 rounded transition`}
               >
-                Gestionar Hechos Nuevos
+                {showListarHechos ? "Ocultar Listado de Hechos" : "Listar Hechos"}
               </button>
             </div>
 
-            {showGestionarHechos && (
-              <GestionarHechosNuevos setShowGestionarHechos={setShowGestionarHechos} />
-            )}
+            {showListarHechos && <HechosTable />}
           </section>
         </main>
       </div>
