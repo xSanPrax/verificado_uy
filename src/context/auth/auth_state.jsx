@@ -4,7 +4,7 @@ import { useReducer, useEffect } from "react";
 import axios from "axios";
 import AuthContext from "./auth_context";
 import authReducer from "./auth_reducer";
-import { MOSTRAR_ALERTA, CARGANDO, LOGIN, LOGOUT, IS_AUTH } from "@/app/types/app";
+import { MOSTRAR_ALERTA, CARGANDO, LOGIN, LOGOUT, IS_AUTH, OCULTAR_ALERTA } from "@/app/types/app";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -21,12 +21,21 @@ export const AuthState = ({ children }) => {
 
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+
+  const mostrarAlerta = (mensaje) => {
+    dispatch({ type: MOSTRAR_ALERTA, payload: { mensaje } });
+  };
+
+  const ocultarAlerta = () => {
+    dispatch({ type: OCULTAR_ALERTA });
+  };
+
+
   const externalLogin = async () => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
       window.location.href = `${BASE_URL}/login`;
     } catch (error) {
-      console.error("Error iniciando el flujo de autenticación:", error);
       dispatch({
         type: MOSTRAR_ALERTA,
         payload: { mensaje: "Error iniciando el flujo de autenticación." },
@@ -51,7 +60,6 @@ export const AuthState = ({ children }) => {
         payload: { mensaje: "Usuario registrado exitosamente." },
       });
     } catch (error) {
-      console.error("Error en el registro interno:", error);
       dispatch({
         type: MOSTRAR_ALERTA,
         payload: { mensaje: error.response?.data || "Error al registrar. Por favor, revisa los datos." },
@@ -93,7 +101,6 @@ export const AuthState = ({ children }) => {
 
       window.location.href = redirectMap[usuario.role] || "/checker";
     } catch (error) {
-      console.error("Error en el login interno:", error);
       dispatch({
         type: MOSTRAR_ALERTA,
         payload: { mensaje: error.response?.data || "Error al iniciar sesión. Por favor, revisa tus credenciales." },
@@ -140,6 +147,8 @@ export const AuthState = ({ children }) => {
         internalRegister,
         internalLogin,
         logout,
+        mostrarAlerta,
+        ocultarAlerta,
       }}
     >
       {children}

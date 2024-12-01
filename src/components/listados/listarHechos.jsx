@@ -5,13 +5,13 @@ import AppContext from "@/context/app/AppContext";
 import HechoPopup from "@/components/hechos/HechoPopup";
 
 const HechosTable = () => {
-  const { hechos, listarHechosPaginados, cargando, totalPages, currentPage } =
+  const { hechos, listarHechosPaginados, cargando, totalPages, currentPage, solicitarVerificacionCitizen } =
     useContext(AppContext);
 
   const [page, setPage] = useState(0);
   const [selectedHecho, setSelectedHecho] = useState(null);
-  const [filterText, setFilterText] = useState(""); // Estado para el filtro por descripción
-  const [filterCategory, setFilterCategory] = useState(""); // Estado para el filtro por categoría
+  const [filterText, setFilterText] = useState(""); 
+  const [filterCategory, setFilterCategory] = useState(""); 
   const [filteredHechos, setFilteredHechos] = useState([]);
 
   useEffect(() => {
@@ -41,9 +41,37 @@ const HechosTable = () => {
     setSelectedHecho(hecho);
   };
 
-  const handlePopupAction = (action) => {
-    console.log(`Acción realizada: ${action}`, selectedHecho);
-    setSelectedHecho(null);
+
+  // Logica de botones
+  const handlePopupAction = async (action, hechoId) => {
+    switch (action) {
+      case "solicitarVerificacionCitizen":
+        if (solicitarVerificacionCitizen) {
+          await solicitarVerificacionCitizen(action, hechoId);
+          console.log(`Solicitud de verificación enviada para el hecho con ID: ${hechoId}`);
+        }
+        break;
+  
+      case "verificar":
+        console.log(`Hecho con ID ${hechoId} verificado`);
+        break;
+  
+      case "rechazar":
+        console.log(`Hecho con ID ${hechoId} rechazado`);
+        break;
+  
+      case "asignarChecker":
+        console.log(`Checker asignado para el hecho con ID: ${hechoId}`);
+        break;
+  
+      case "eliminar":
+        console.log(`Hecho con ID ${hechoId} eliminado`);
+        break;
+  
+      default:
+        console.warn(`Acción no reconocida: ${action}`);
+    }
+    setSelectedHecho(null); 
   };
 
   const handleClosePopup = () => {
