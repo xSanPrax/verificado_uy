@@ -174,7 +174,6 @@ export const AppState = ({ children }) => {
 
   const solicitarVerificacionCitizen = async (actionType, hechoId) => {
     const { citizenId } = state; 
-  
     if (actionType === "solicitarVerificacionCitizen") {  
       if (!citizenId) {
         console.warn("Citizen ID no está definido");
@@ -183,7 +182,7 @@ export const AppState = ({ children }) => {
   
       try {
         const response = await axios.post(`/citizen/${citizenId}/solicitar-verificacion/${hechoId}`);
-        alert(response.message);
+        alert("Solicitud realizada con exito");
       } catch (error) {
         alert("Error al enviar la solicitud: " + (error.response?.data || "Error desconocido."));
       }
