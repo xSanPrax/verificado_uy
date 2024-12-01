@@ -173,11 +173,9 @@ export const AppState = ({ children }) => {
 
 
   const solicitarVerificacionCitizen = async (actionType, hechoId) => {
-    const { citizenId } = state; // Obtén citizenId desde el estado
+    const { citizenId } = state; 
   
-    if (actionType === "solicitarVerificacionCitizen") {
-      console.log(`Invocando solicitarVerificacionCitizen con acción: ${actionType}, ID: ${hechoId}, citizen id: ${citizenId}`);
-  
+    if (actionType === "solicitarVerificacionCitizen") {  
       if (!citizenId) {
         console.warn("Citizen ID no está definido");
         return;
