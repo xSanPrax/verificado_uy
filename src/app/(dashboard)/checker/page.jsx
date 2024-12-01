@@ -2,7 +2,7 @@
 
 import { useEffect, useContext, useState } from "react";
 import AppContext from "@/context/app/AppContext";
-import HechoPopup from "@/components/hechos/HechoPopup"; // Asegúrate de tener este componente creado
+import HechoPopup from "@/components/hechos/HechoPopup";
 
 const BlankPage = () => {
   const { hechos, listarHechosPaginados, cargando, totalPages, currentPage, userRole } =
@@ -11,9 +11,18 @@ const BlankPage = () => {
   const [page, setPage] = useState(0);
   const [selectedHecho, setSelectedHecho] = useState(null);
 
+  // Filtros
+  const [estadoFiltro, setEstadoFiltro] = useState("");
+  const [descripcionFiltro, setDescripcionFiltro] = useState("");
+  const [categoriaFiltro, setCategoriaFiltro] = useState("");
+
   useEffect(() => {
-    listarHechosPaginados(page, 10);
-  }, [page, listarHechosPaginados]);
+    listarHechosPaginados(page, 10, {
+      estado: estadoFiltro,
+      descripcion: descripcionFiltro,
+      categoria: categoriaFiltro,
+    });
+  }, [page, listarHechosPaginados, estadoFiltro, descripcionFiltro, categoriaFiltro]);
 
   const handlePrevPage = () => {
     if (page > 0) setPage(page - 1);
@@ -39,6 +48,62 @@ const BlankPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Listado de Hechos</h1>
+
+      {/* Filtros */}
+      <div className="w-full max-w-7xl mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <label htmlFor="estado" className="font-semibold">
+              Estado:
+            </label>
+            <select
+              id="estado"
+              value={estadoFiltro}
+              onChange={(e) => setEstadoFiltro(e.target.value)}
+              className="py-2 px-4 rounded border border-gray-300"
+            >
+              <option value="">Todos</option>
+              <option value="NUEVO">Nuevo</option>
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="VERIFICADO">Verificado</option>
+              <option value="RECHAZADO">Rechazado</option>
+            </select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <label htmlFor="categoria" className="font-semibold">
+              Categoría:
+            </label>
+            <select
+              id="categoria"
+              value={categoriaFiltro}
+              onChange={(e) => setCategoriaFiltro(e.target.value)}
+              className="py-2 px-4 rounded border border-gray-300"
+            >
+              <option value="">Todas</option>
+              <option value="Salud">Salud</option>
+              <option value="Economía">Economía</option>
+              <option value="Tecnología">Tecnología</option>
+              <option value="Deportes">Deportes</option>
+              <option value="Política">Política</option>
+            </select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <label htmlFor="descripcion" className="font-semibold">
+              Descripción:
+            </label>
+            <input
+              id="descripcion"
+              type="text"
+              value={descripcionFiltro}
+              onChange={(e) => setDescripcionFiltro(e.target.value)}
+              placeholder="Buscar descripción"
+              className="py-2 px-4 rounded border border-gray-300"
+            />
+          </div>
+        </div>
+      </div>
 
       {cargando ? (
         <div className="flex justify-center items-center">
