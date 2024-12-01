@@ -5,8 +5,14 @@ import AppContext from "@/context/app/AppContext";
 import HechoPopup from "@/components/hechos/HechoPopup";
 
 const BlankPage = () => {
-  const { hechos, listarHechosPaginados, cargando, totalPages, currentPage, userRole } =
-    useContext(AppContext);
+  const {
+    hechos,
+    listarHechosPaginados,
+    cargando,
+    totalPages,
+    currentPage,
+    userRole,
+  } = useContext(AppContext);
 
   const [page, setPage] = useState(0);
   const [selectedHecho, setSelectedHecho] = useState(null);
@@ -60,10 +66,9 @@ const BlankPage = () => {
               id="estado"
               value={estadoFiltro}
               onChange={(e) => setEstadoFiltro(e.target.value)}
-              className="py-2 px-4 rounded border border-gray-300"
+              className="py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
             >
               <option value="">Todos</option>
-              <option value="NUEVO">Nuevo</option>
               <option value="PENDIENTE">Pendiente</option>
               <option value="VERIFICADO">Verificado</option>
               <option value="RECHAZADO">Rechazado</option>
@@ -78,7 +83,7 @@ const BlankPage = () => {
               id="categoria"
               value={categoriaFiltro}
               onChange={(e) => setCategoriaFiltro(e.target.value)}
-              className="py-2 px-4 rounded border border-gray-300"
+              className="py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
             >
               <option value="">Todas</option>
               <option value="Salud">Salud</option>
@@ -99,7 +104,7 @@ const BlankPage = () => {
               value={descripcionFiltro}
               onChange={(e) => setDescripcionFiltro(e.target.value)}
               placeholder="Buscar descripción"
-              className="py-2 px-4 rounded border border-gray-300"
+              className="py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
             />
           </div>
         </div>
@@ -112,7 +117,7 @@ const BlankPage = () => {
       ) : (
         <div className="w-full max-w-7xl">
           <div className="overflow-x-auto shadow-md rounded-lg">
-            <table className="min-w-full bg-white border border-gray-200">
+            <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
               <thead className="bg-green-600 text-white">
                 <tr>
                   <th className="text-left py-3 px-6">Descripción</th>
@@ -126,7 +131,7 @@ const BlankPage = () => {
                   hechos.map((hecho) => (
                     <tr
                       key={hecho.id}
-                      className="border-t hover:bg-gray-100 cursor-pointer"
+                      className="border-t hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                     >
                       <td className="py-3 px-6">{hecho.description}</td>
                       <td className="py-3 px-6">{hecho.category}</td>
@@ -134,7 +139,7 @@ const BlankPage = () => {
                       <td className="py-3 px-6">
                         <button
                           onClick={() => handleSelectHecho(hecho)}
-                          className="bg-green-600 text-white py-1 px-3 rounded hover:bg-green-500"
+                          className="bg-green-600 text-white py-1 px-3 rounded-lg hover:bg-green-500 transition"
                         >
                           Ver Detalles
                         </button>
