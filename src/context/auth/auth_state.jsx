@@ -1,12 +1,13 @@
 "use client";
 
 import { useReducer, useEffect } from "react";
-import axios from "axios"; 
+import axios from "axios";
 import AuthContext from "./auth_context";
 import authReducer from "./auth_reducer";
 import { MOSTRAR_ALERTA, CARGANDO, LOGIN, LOGOUT, IS_AUTH } from "@/app/types/app";
 
-const BASE_URL = "https://docker4363-verificando-back.web.elasticloud.uy";
+const BASE_URL = "http://localhost:8080";
+
 axios.defaults.withCredentials = true;
 
 export const AuthState = ({ children }) => {
@@ -39,13 +40,11 @@ export const AuthState = ({ children }) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
 
-      const response = await axios.post(`${BASE_URL}/usuarios/registro`, {
-        nombre,
-        email,
-        password,
-      });
-
-      console.log(response.message)
+      await axios.post(
+        `${BASE_URL}/usuarios/registro`,
+        { nombre, email, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
 
       dispatch({
         type: MOSTRAR_ALERTA,
@@ -66,10 +65,11 @@ export const AuthState = ({ children }) => {
     try {
       dispatch({ type: CARGANDO, payload: { cargando: true } });
 
-      const response = await axios.post(`${BASE_URL}/usuarios/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${BASE_URL}/usuarios/login`,
+        { email, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
 
       const { message, usuario } = response.data;
 
@@ -85,21 +85,13 @@ export const AuthState = ({ children }) => {
         payload: { mensaje: message },
       });
 
-      switch (usuario.role) {
-        case "ADMIN":
-          window.location.href = "/admin";
-          break;
-        case "CITIZEN":
-          window.location.href = "/usuario";
-          break;
-        case "SUBMITTER":
-          window.location.href = "/submitter";
-          break;
-        default:
-          window.location.href = "/checker";
-          break;
-      }
+      const redirectMap = {
+        ADMIN: "/admin",
+        CITIZEN: "/usuario",
+        SUBMITTER: "/submitter",
+      };
 
+      window.location.href = redirectMap[usuario.role] || "/checker";
     } catch (error) {
       console.error("Error en el login interno:", error);
       dispatch({
@@ -113,7 +105,7 @@ export const AuthState = ({ children }) => {
 
   const checkAuth = () => {
     dispatch({ type: CARGANDO, payload: { cargando: true } });
-    
+
     const usuarioAuth = JSON.parse(localStorage.getItem("usuarioAuth"));
     if (usuarioAuth) {
       dispatch({
@@ -123,9 +115,9 @@ export const AuthState = ({ children }) => {
     } else {
       dispatch({ type: LOGOUT });
     }
-    
+
     dispatch({ type: CARGANDO, payload: { cargando: false } });
-  };  
+  };
 
   const logout = () => {
     localStorage.removeItem("usuarioAuth");
