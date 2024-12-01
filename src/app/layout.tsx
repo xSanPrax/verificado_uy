@@ -2,15 +2,19 @@
 
 import localFont from "next/font/local";
 import { AuthState } from "@/context/auth/auth_state";
-import { AppState } from "@/context/app/AppState"; // Importa AppState
-import Navbar from "@/components/Navbar"; // Importa la barra de navegación superior
+import { AppState } from "@/context/app/AppState"; // Contexto global de la aplicación
+import Navbar from "@/components/Navbar"; // Barra de navegación superior
+import Alert from "@/components/Alerta"; // Componente Alert
 import "./globals.css";
+import { useContext } from "react";
+import AuthContext from "@/context/auth/auth_context";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -24,14 +28,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <AuthState>
-          <AppState> {/* Envuelve todo en AppState */}
-            <Navbar /> {/* Barra de navegación superior */}
-            <main className="p-6 bg-gray-100 min-h-screen">{children}</main> {/* Contenido principal */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}>
+        <AuthState> {/* Contexto AuthState envuelve todo */}
+          <AppState> {/* Contexto AppState envuelve el resto */}
+            <LayoutContent>{children}</LayoutContent>
           </AppState>
         </AuthState>
       </body>
     </html>
+  );
+}
+
+function LayoutContent({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useContext(AuthContext); // Ahora dentro de un componente que está envuelto por AuthState
+
+  return (
+    <>
+      <Alert /> {/* Popup de alerta */}
+      {isAuthenticated && <Navbar />} {/* Navbar condicional */}
+      <main className="p-6 min-h-screen">
+        {children} {/* Contenido principal */}
+      </main>
+    </>
   );
 }
