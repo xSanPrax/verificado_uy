@@ -96,61 +96,7 @@ const Dashboard = () => {
           {showDonation && <Donation setShowDonation={setShowDonation} />}
 
           {showHechosTable && (
-            <div>
-              <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-                <div className="flex items-center space-x-4 mb-4 md:mb-0">
-                  <label htmlFor="estado" className="text-lg font-semibold">
-                    Filtrar por Estado:
-                  </label>
-                  <select
-                    id="estado"
-                    value={estadoFiltro}
-                    onChange={(e) => setEstadoFiltro(e.target.value)}
-                    className="py-2 px-4 rounded border border-gray-300"
-                  >
-                    <option value="">Todos</option>
-                    <option value="PENDIENTE">Pendiente</option>
-                    <option value="VERIFICADO">Verificado</option>
-                    <option value="RECHAZADO">Rechazado</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center space-x-4 mb-4 md:mb-0">
-                  <label htmlFor="categoria" className="text-lg font-semibold">
-                    Filtrar por Categoría:
-                  </label>
-                  <select
-                    id="categoria"
-                    value={categoriaFiltro}
-                    onChange={(e) => setCategoriaFiltro(e.target.value)}
-                    className="py-2 px-4 rounded border border-gray-300"
-                  >
-                    <option value="">Todas</option>
-                    <option value="Salud">Salud</option>
-                    <option value="Economía">Economía</option>
-                    <option value="Tecnología">Tecnología</option>
-                    <option value="Deportes">Deportes</option>
-                    <option value="Política">Política</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <label htmlFor="descripcion" className="text-lg font-semibold">
-                    Filtrar por Descripción:
-                  </label>
-                  <input
-                    id="descripcion"
-                    type="text"
-                    placeholder="Buscar por descripción"
-                    value={descripcionFiltro}
-                    onChange={(e) => setDescripcionFiltro(e.target.value)}
-                    className="py-2 px-4 rounded border border-gray-300"
-                  />
-                </div>
-              </div>
-
               <HechosTable filtros={handleFiltrarHechos()} />
-            </div>
           )}
 
           {showReport && <ReportViewer setShowReport={setShowReport} />}

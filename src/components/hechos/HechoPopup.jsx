@@ -3,51 +3,51 @@
 import React, { useEffect, useState } from "react";
 
 const HechoPopup = ({ hecho, onClose, onAction }) => {
-  const [userRole, setUserRole] = useState(null); // Estado para el rol del usuario
+  const [userRole, setUserRole] = useState(null);
 
-  // Obtener el rol del usuario desde localStorage
   useEffect(() => {
     const usuarioAuth = localStorage.getItem("usuarioAuth");
     if (usuarioAuth) {
       const { role } = JSON.parse(usuarioAuth);
-      setUserRole(role); // Establece el rol del usuario
+      setUserRole(role);
     }
   }, []);
 
-  if (!hecho) return null; // No renderiza si no hay hecho seleccionado
+  if (!hecho) return null;
 
   const renderActions = () => {
     switch (userRole) {
       case "CITIZEN":
         return (
-          <p className="text-gray-600 italic">
-            Los ciudadanos no tienen permisos para realizar acciones.
-          </p>
+          <button
+            onClick={() => onAction("solicitarVerificacionCitizen", hecho.id)}
+            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500"
+          >
+            Solicitar Verificación
+          </button>
         );
 
       case "SUBMITTER":
         return (
-          <>
-            <button
-              onClick={() => onAction("solicitarVerificacion")}
-              className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500"
-            >
-              Solicitar Verificación
-            </button>
-          </>
+          <button
+            onClick={() => onAction("solicitarVerificacion", hecho.id)}
+            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500"
+          >
+            Solicitar Verificación
+          </button>
         );
 
       case "CHECKER":
         return (
           <>
             <button
-              onClick={() => onAction("verificar")}
+              onClick={() => onAction("verificar", hecho.id)}
               className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-500"
             >
               Verificar
             </button>
             <button
-              onClick={() => onAction("rechazar")}
+              onClick={() => onAction("rechazar", hecho.id)}
               className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-500"
             >
               Rechazar
@@ -59,13 +59,13 @@ const HechoPopup = ({ hecho, onClose, onAction }) => {
         return (
           <>
             <button
-              onClick={() => onAction("asignarChecker")}
+              onClick={() => onAction("asignarChecker", hecho.id)}
               className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-500"
             >
               Asignar Checker
             </button>
             <button
-              onClick={() => onAction("eliminar")}
+              onClick={() => onAction("eliminar", hecho.id)}
               className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-500"
             >
               Eliminar

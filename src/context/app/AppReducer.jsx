@@ -22,6 +22,7 @@ export default (state, action) => {
       return {
         ...state,
         hechos: action.payload.data || state.hechos,
+        citizenId: action.payload.citizenId || state.citizenId, 
       };
     case CLEAR_DATA:
       return {

@@ -171,6 +171,28 @@ export const AppState = ({ children }) => {
     }
   };
 
+
+  const solicitarVerificacionCitizen = async (actionType, hechoId) => {
+    const { citizenId } = state; // Obtén citizenId desde el estado
+  
+    if (actionType === "solicitarVerificacionCitizen") {
+      console.log(`Invocando solicitarVerificacionCitizen con acción: ${actionType}, ID: ${hechoId}, citizen id: ${citizenId}`);
+  
+      if (!citizenId) {
+        console.warn("Citizen ID no está definido");
+        return;
+      }
+  
+      try {
+        const response = await axios.post(`/citizen/${citizenId}/solicitar-verificacion/${hechoId}`);
+        alert(response.message);
+      } catch (error) {
+        alert("Error al enviar la solicitud: " + (error.response?.data || "Error desconocido."));
+      }
+    }
+  };
+  
+
   useEffect(() => {
     fetchDonationConfig();
     obtenerCitizenId();
@@ -195,6 +217,7 @@ export const AppState = ({ children }) => {
         listarHechosPaginados,
         crearHecho,
         fetchTopCategoriasDeHechos,
+        solicitarVerificacionCitizen,
       }}
     >
       {children}
