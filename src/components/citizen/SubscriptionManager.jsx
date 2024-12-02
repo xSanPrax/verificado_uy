@@ -4,41 +4,75 @@ import { useState, useContext, useEffect } from "react";
 import AppContext from "@/context/app/AppContext";
 
 const SubscriptionManager = ({ setShowSubscriptionManager }) => {
-  const { manejarSuscripcion, obtenerSuscripciones, solicitarVerificacion, cargando, mensaje } =
-    useContext(AppContext);
+  const {
+    obtenerSuscripciones,
+    manejarSuscripcion,
+    solicitarVerificacion,
+    cargando,
+    mensaje,
+  } = useContext(AppContext);
 
   const [categoria, setCategoria] = useState("");
   const [suscripciones, setSuscripciones] = useState([]);
-  const [citizenId] = useState(1); // Ajusta el ID del ciudadano según tu lógica
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(10);
+  const [citizenId] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
 
-  const manejarCargarSuscripciones = async () => {
-    const data = await obtenerSuscripciones(citizenId);
-    setSuscripciones(data || []);
+  // Manejar la carga de suscripciones
+  const manejarCargarSuscripciones = async (pagina = 0) => {
+    const data = await obtenerSuscripciones(pagina, pageSize);
+    if (data) {
+      setSuscripciones(data.content || []);
+      setPage(data.number);
+      setTotalPages(data.totalPages);
+    }
   };
 
-  // Mostrar animación de entrada al montar el componente
   useEffect(() => {
-    const timeout = setTimeout(() => setIsVisible(true), 10); // Pequeño retraso para animación
+    const timeout = setTimeout(() => setIsVisible(true), 10);
+    manejarCargarSuscripciones(0);
     return () => clearTimeout(timeout);
   }, []);
 
-  // Manejo del cierre con animación de salida
   const handleClose = () => {
     setIsVisible(false);
-    setTimeout(() => setShowSubscriptionManager(false), 300); // Tiempo de la animación
+    setTimeout(() => setShowSubscriptionManager(false), 300);
+  };
+
+  const manejarPagina = (incremento) => {
+    const nuevaPagina = page + incremento;
+    if (nuevaPagina >= 0 && nuevaPagina < totalPages) {
+      manejarCargarSuscripciones(nuevaPagina);
+    }
+  };
+
+  const manejarSolicitarVerificacion = async (hechoId) => {
+    try {
+      await solicitarVerificacion(hechoId);
+    } catch (error) {
+      console.error("Error al solicitar la verificación:", error);
+    }
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
       <div
-        className={`p-8 bg-white rounded-lg shadow-lg transform transition duration-300 w-3/4 max-w-4xl ${
+        className={`p-8 bg-white rounded-lg shadow-lg transform transition duration-300 w-full max-w-4xl ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"
         }`}
+        style={{ maxHeight: "80vh", overflowY: "auto" }}
       >
         <h2 className="text-3xl font-semibold mb-6 text-gray-800 text-center">
           Gestión de Categorías
         </h2>
+
+
+        {/* Mensaje de alerta */}
+        {mensaje && (
+          <div className="mb-6 text-center text-red-500 font-medium">{mensaje}</div>
+        )}
 
         {/* Input y botones para suscripción */}
         <div className="flex items-center justify-center space-x-4 mb-6">
@@ -50,60 +84,71 @@ const SubscriptionManager = ({ setShowSubscriptionManager }) => {
             className="p-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-400"
           />
           <button
-            onClick={() => manejarSuscripcion("suscribirse", categoria, citizenId)}
-            className="bg-gray-800 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-700 transition"
-            disabled={cargando}
+            onClick={() => manejarSuscripcion("suscribirse", categoria)}
+            className={`bg-gray-800 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-700 transition ${
+              !categoria.trim() ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={cargando || !categoria.trim()}
           >
             Suscribirse
           </button>
           <button
-            onClick={() => manejarSuscripcion("cancelar", categoria, citizenId)}
-            className="bg-red-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-red-500 transition"
-            disabled={cargando}
+            onClick={() => manejarSuscripcion("cancelar", categoria)}
+            className={`bg-red-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-red-500 transition ${
+              !categoria.trim() ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={cargando || !categoria.trim()}
           >
             Cancelar
           </button>
         </div>
 
-        {/* Botón para cargar suscripciones */}
-        <button
-          onClick={manejarCargarSuscripciones}
-          className="bg-gray-700 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-600 transition mb-4"
-          disabled={cargando}
-        >
-          Cargar Suscripciones
-        </button>
-
         {/* Lista de suscripciones */}
         {Array.isArray(suscripciones) && suscripciones.length > 0 ? (
           <ul className="space-y-4">
             {suscripciones.map((hecho) => (
-              hecho.id && hecho.title ? (
-                <li
-                  key={hecho.id}
-                  className="bg-gray-100 rounded-lg shadow-md p-4 hover:shadow-lg transition"
+              <li
+                key={hecho.id}
+                className="bg-gray-100 rounded-lg shadow-md p-4 hover:shadow-lg transition"
+              >
+                <p className="text-lg font-medium text-gray-800">{`Descripción: ${hecho.description}`}</p>
+                <p className="text-sm text-gray-600">{`Categoría: ${hecho.category}`}</p>
+                <p className="text-sm text-gray-600">{`Estado: ${hecho.status}`}</p>
+                <button
+                  onClick={() => manejarSolicitarVerificacion(hecho.id)}
+                  className="mt-2 bg-yellow-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-yellow-400 transition"
+                  disabled={cargando}
                 >
-                  <p className="text-lg font-medium text-gray-800">{hecho.title}</p>
-                  <button
-                    onClick={() => solicitarVerificacion(citizenId, hecho.id)}
-                    className="mt-2 bg-yellow-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-yellow-400 transition"
-                    disabled={cargando}
-                  >
-                    Solicitar Verificación
-                  </button>
-                </li>
-              ) : null
+                  Solicitar Verificación
+                </button>
+              </li>
             ))}
           </ul>
         ) : (
-          <p className="text-center text-gray-600">No hay suscripciones disponibles.</p>
+          <p className="text-center text-gray-600">
+            {cargando ? "Cargando suscripciones..." : "No hay suscripciones disponibles."}
+          </p>
         )}
 
+        {/* Paginación */}
+        <div className="flex justify-center items-center mt-6 space-x-4">
+          <button
+            onClick={() => manejarPagina(-1)}
+            className="bg-gray-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-400 transition"
+            disabled={page === 0 || cargando}
+          >
+            Anterior
+          </button>
+          <p className="text-gray-700">{`Página ${page + 1} de ${totalPages}`}</p>
+          <button
+            onClick={() => manejarPagina(1)}
+            className="bg-gray-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-400 transition"
+            disabled={page + 1 === totalPages || cargando}
+          >
+            Siguiente
+          </button>
+        </div>
 
-        {/* Mensaje de alerta */}
-        {mensaje && (
-          <div className="mt-6 text-center text-red-500 font-medium">{mensaje}</div>
-        )}
 
         {/* Botón para cerrar */}
         <div className="text-center mt-6">

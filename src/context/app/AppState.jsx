@@ -31,8 +31,9 @@ export const AppState = ({ children }) => {
     },
     citizenId: null,
     hechos: [],
-    totalPages: 0, // Total de páginas para la paginación
-    currentPage: 0, // Página actual
+    totalPages: 0, 
+    currentPage: 0, 
+    suscripciones: [],
   };
 
   const [state, dispatch] = useReducer(appReducer, initialState);
@@ -117,13 +118,12 @@ export const AppState = ({ children }) => {
         { headers: { "Content-Type": "application/json" } }
       );
       mostrarAlerta("Hecho creado exitosamente.");
-      return response.data;
+      console.log(response)
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Error al crear el hecho.";
       console.error("Error al crear el hecho:", errorMessage);
       mostrarAlerta(errorMessage);
-      return null;
     } finally {
       dispatch({ type: CARGANDO, payload: { cargando: false } });
     }
@@ -188,7 +188,75 @@ export const AppState = ({ children }) => {
       }
     }
   };
+
+    // Función para manejar la suscripción y cancelación
+  const manejarSuscripcion = useCallback(async (accion, categoria) => {
+    const { citizenId } = state;
+
+    try {
+      dispatch({ type: "CARGANDO", payload: { cargando: true } });
+
+      const endpoint =
+        accion === "suscribirse"
+          ? `/citizen/${citizenId}/suscribirse/${categoria}`
+          : `/citizen/${citizenId}/cancelar-suscripcion/${categoria}`;
+
+      const { data } = await axios.post(endpoint);
+
+      mostrarAlerta(data);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data || "Error al manejar la suscripción.";
+      mostrarAlerta(errorMessage);
+    } finally {
+      dispatch({ type: "CARGANDO", payload: { cargando: false } });
+    }
+  }, [state.citizenId]);
+
+  const obtenerSuscripciones = useCallback(async (pagina = 0, tamano = 10) => {
+    const { citizenId } = state;
   
+    try {
+      dispatch({ type: "CARGANDO", payload: { cargando: true } });
+  
+      const { data } = await axios.get(`/citizen/${citizenId}/suscripciones`, {
+        params: { page: pagina, size: tamano },
+      });
+  
+      dispatch({ type: "SET_SUSCRIPCIONES", payload: data });
+  
+      return data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data || "Error al obtener las suscripciones.";
+      mostrarAlerta(errorMessage);
+      return null; // Retorna null en caso de error para diferenciar de un arreglo vacío
+    } finally {
+      dispatch({ type: "CARGANDO", payload: { cargando: false } });
+    }
+  }, [state.citizenId]);
+  
+
+  // Función para solicitar verificación
+  const solicitarVerificacion = useCallback(async (hechoId) => {
+    const { citizenId } = state;
+
+    try {
+      dispatch({ type: "CARGANDO", payload: { cargando: true } });
+
+      const { data } = await axios.post(
+        `/citizen/${citizenId}/solicitar-verificacion/${hechoId}`
+      );
+
+      mostrarAlerta(data);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data || "Error al solicitar la verificación.";
+      mostrarAlerta(errorMessage);
+    } finally {
+      dispatch({ type: "CARGANDO", payload: { cargando: false } });
+    }
+  }, [state.citizenId]);
 
   useEffect(() => {
     fetchDonationConfig();
@@ -206,6 +274,7 @@ export const AppState = ({ children }) => {
         hechos: state.hechos,
         totalPages: state.totalPages,
         currentPage: state.currentPage,
+        suscripciones: state.suscripciones,
         mostrarAlerta,
         ocultarAlerta,
         fetchDonationConfig,
@@ -215,6 +284,9 @@ export const AppState = ({ children }) => {
         crearHecho,
         fetchTopCategoriasDeHechos,
         solicitarVerificacionCitizen,
+        manejarSuscripcion,
+        obtenerSuscripciones,
+        solicitarVerificacion
       }}
     >
       {children}
