@@ -27,7 +27,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-3">
             <Image
               src="/logo.png"
-              alt="Verificado Uy Logo"
+              alt="VerificadoUY Logo"
               width={40}
               height={40}
               className="mr-2"
@@ -37,36 +37,46 @@ const Navbar = () => {
 
           {/* Navegación */}
           <ul className="flex flex-wrap space-x-4 items-center">
+          {usuarioAuth && usuarioAuth.role === "ADMIN" ? (
             <li
               className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
               onClick={() => router.push("/admin")}
             >
               Admin
             </li>
+            ) : null}
+            {usuarioAuth && usuarioAuth.role === "CITIZEN" || usuarioAuth.role === "ADMIN" ? (
             <li
               className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
               onClick={() => router.push("/usuario")}
             >
               Inicio
             </li>
+            ) : null}
+            {usuarioAuth && usuarioAuth.role === "SUBMITTER" || usuarioAuth.role === "ADMIN" ? (
             <li
               className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
               onClick={() => router.push("/submitter")}
             >
               Submitter
             </li>
-            <li
-              className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
-              onClick={() => router.push("/checker")}
-            >
-              Checker
-            </li>
-            <li
-              className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
-              onClick={handleConsultar}
-            >
-              Consultar
-            </li>
+            ) : null}
+            {usuarioAuth && usuarioAuth.role === "CHECKER" || usuarioAuth.role === "ADMIN" ? (
+                <li
+                    className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
+                    onClick={() => router.push("/checker")}
+                >
+                  Checker
+                </li>
+            ) : null}
+            {usuarioAuth && usuarioAuth.role === "CHECKER" || usuarioAuth.role === "ADMIN" ? (
+                <li
+                    className="hover:bg-green-700 px-4 py-2 rounded-md cursor-pointer transition text-center"
+                    onClick={handleConsultar}
+                >
+                  Consultar
+                </li>
+            ) : null}
           </ul>
 
           {/* Información del usuario */}

@@ -13,7 +13,8 @@ import {
   CARGAR_HECHOS, 
   HECHOS_CARGADOS, 
   ERROR_CARGAR_HECHOS, 
-  SET_REPORTES_DATA 
+  SET_REPORTES_DATA,
+  SET_USUARIOS
 } from "@/app/types/app";
 
 axios.defaults.baseURL = "http://localhost:8080";
@@ -258,6 +259,73 @@ export const AppState = ({ children }) => {
     }
   }, [state.citizenId]);
 
+
+  const crearUsuario = async (nombre, email) => {
+    try {
+      const params = new URLSearchParams();
+      params.append("nombre", nombre);
+      params.append("email", email);
+  
+      const response = await axios.post(`/admin/crear-usuario?${params.toString()}`);
+  
+      const message = typeof response.data === "string"
+        ? response.data
+        : response.data.message || JSON.stringify(response.data);
+  
+      return { success: true, message };
+    } catch (error) {
+      const message = error.response?.data?.error ||
+                      error.response?.data?.message ||
+                      error.message;
+      return { success: false, message };
+    }
+  };
+
+  const modificarUsuarioRole = async (email, nuevoRol) => {
+    try {
+      const params = new URLSearchParams();
+      params.append("email", email);
+      params.append("nuevoRol", nuevoRol);
+  
+      const response = await axios.put(`/admin/modificar-rol?${params.toString()}`);
+  
+      const message = typeof response.data === "string"
+        ? response.data
+        : response.data.message || JSON.stringify(response.data);
+  
+      return { success: true, message };
+    } catch (error) {
+      const message = error.response?.data?.error ||
+                      error.response?.data?.message ||
+                      error.message;
+      return { success: false, message };
+    }
+  };
+
+  const listUsuarios = async () => {
+    try {
+      const response = await axios.get("/usuarios/listar-usuarios");
+
+      const usuarios = typeof response.data === "string" 
+        ? JSON.parse(response.data) 
+        : response.data;
+
+      dispatch({
+        type: SET_USUARIOS,
+        payload: usuarios,
+      });
+    } catch (error) {
+      const mensaje = error.response?.data?.error || 
+                      error.response?.data?.message || 
+                      "Error al cargar los usuarios.";
+
+      dispatch({
+        type: "MOSTRAR_ALERTA",
+        payload: { mensaje },
+      });
+    }
+  };
+
   useEffect(() => {
     fetchDonationConfig();
     obtenerCitizenId();
@@ -286,7 +354,10 @@ export const AppState = ({ children }) => {
         solicitarVerificacionCitizen,
         manejarSuscripcion,
         obtenerSuscripciones,
-        solicitarVerificacion
+        solicitarVerificacion,
+        crearUsuario,
+        modificarUsuarioRole,
+        listUsuarios,
       }}
     >
       {children}
