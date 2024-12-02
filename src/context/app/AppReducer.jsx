@@ -8,7 +8,8 @@ import {
   CARGAR_HECHOS, 
   HECHOS_CARGADOS, 
   ERROR_CARGAR_HECHOS, 
-  SET_REPORTES_DATA 
+  SET_REPORTES_DATA,
+  SET_SUSCRIPCIONES
 } from "@/app/types/app";
 
 export default (state, action) => {
@@ -69,6 +70,12 @@ export default (state, action) => {
       return {
         ...state,
         data: action.payload.data,
+      };
+    case SET_SUSCRIPCIONES:
+      return {
+        ...state,
+        cargando: false,
+        suscripciones: action.payload,
       };
     default:
       return state;
