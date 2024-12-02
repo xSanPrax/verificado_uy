@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import AppContext from "@/context/app/AppContext";
 
 const UpdateUserRoleForm = () => {
-  const { updateUsuarioRole, mensaje, mostrarAlerta } = useContext(AppContext);
+  const { modificarUsuarioRole, mensaje, mostrarAlerta } = useContext(AppContext);
   const [email, setEmail] = useState("");
   const [nuevoRol, setNuevoRol] = useState("CITIZEN");
 
@@ -14,9 +14,15 @@ const UpdateUserRoleForm = () => {
       mostrarAlerta("Por favor, ingresa el email del usuario");
       return;
     }
-    await updateUsuarioRole(email, nuevoRol);
-    setEmail("");
-    setNuevoRol("CITIZEN");
+    const result = await modificarUsuarioRole(email, nuevoRol);
+
+    if (result.success) {
+      mostrarAlerta("Rol modificado exitosamente");
+      setEmail("");
+      setNuevoRol("CITIZEN");
+    } else {
+      mostrarAlerta(result.message);
+    }
   };
 
   return (
@@ -41,7 +47,9 @@ const UpdateUserRoleForm = () => {
           <option value="CHECKER">CHECKER</option>
           <option value="SUBMITTER">SUBMITTER</option>
         </select>
-        <button type="submit" className="btn btn-primary mt-4">Modificar Rol</button>
+        <button type="submit" className="btn btn-primary mt-4">
+          Modificar Rol
+        </button>
       </form>
     </div>
   );

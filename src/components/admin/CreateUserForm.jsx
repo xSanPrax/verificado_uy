@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import AppContext from "@/context/app/AppContext";
 
 const CreateUserForm = () => {
-  const { createUsuario, mensaje, mostrarAlerta } = useContext(AppContext);
+  const { crearUsuario, mensaje, mostrarAlerta } = useContext(AppContext);
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("CITIZEN");
@@ -15,10 +15,16 @@ const CreateUserForm = () => {
       mostrarAlerta("Por favor, completa todos los campos");
       return;
     }
-    await createUsuario(nombre, email, role);
-    setNombre("");
-    setEmail("");
-    setRole("CITIZEN");
+    const result = await crearUsuario(nombre, email, role);
+
+    if (result.success) {
+      mostrarAlerta("Usuario creado exitosamente");
+      setNombre("");
+      setEmail("");
+      setRole("CITIZEN");
+    } else {
+      mostrarAlerta(result.message);
+    }
   };
 
   return (
@@ -50,7 +56,9 @@ const CreateUserForm = () => {
           <option value="CHECKER">CHECKER</option>
           <option value="SUBMITTER">SUBMITTER</option>
         </select>
-        <button type="submit" className="btn btn-primary mt-4">Crear Usuario</button>
+        <button type="submit" className="btn btn-primary mt-4">
+          Crear Usuario
+        </button>
       </form>
     </div>
   );
