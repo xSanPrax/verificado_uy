@@ -139,7 +139,7 @@ const SubscriptionManager = ({ setShowSubscriptionManager }) => {
           >
             Anterior
           </button>
-          <p className="text-gray-700">{`Página ${page + 1} de ${totalPages}`}</p>
+          <p className="text-gray-700">{`Página ${page + 1} de ${totalPages === 0 ? 1 : totalPages}`}</p>
           <button
             onClick={() => manejarPagina(1)}
             className="bg-gray-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-400 transition"

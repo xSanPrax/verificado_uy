@@ -118,7 +118,7 @@ const BlankPage = () => {
         <div className="w-full max-w-7xl">
           <div className="overflow-x-auto shadow-md rounded-lg">
             <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <thead className="bg-green-600 text-white">
+              <thead className="bg-gradient-to-r from-green-600 to-green-800 text-white">
                 <tr>
                   <th className="text-left py-3 px-6">Descripción</th>
                   <th className="text-left py-3 px-6">Categoría</th>
