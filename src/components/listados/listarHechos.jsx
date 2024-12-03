@@ -113,7 +113,7 @@ const HechosTable = () => {
         <div>
           <div className="overflow-x-auto shadow-md rounded-lg">
             <table className="min-w-full bg-white border border-gray-200">
-              <thead className="bg-green-600 text-white">
+              <thead className="bg-gradient-to-r from-green-600 to-green-800 text-white">
                 <tr>
                   <th className="text-left py-3 px-6">Descripción</th>
                   <th className="text-left py-3 px-6">Categoría</th>
@@ -169,7 +169,7 @@ const HechosTable = () => {
               Anterior
             </button>
             <span className="text-gray-700">
-              Página {currentPage + 1} de {totalPages}
+              Página {currentPage + 1} de {totalPages === 0 ? 1 : totalPages}
             </span>
             <button
               onClick={handleNextPage}
@@ -177,7 +177,7 @@ const HechosTable = () => {
               className={`py-2 px-4 rounded-lg ${
                 page === totalPages - 1
                   ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                  : "bg-green-600 text-white hover:bg-green-500"
+                  : "bg-green-700 text-white hover:bg-green-500"
               }`}
             >
               Siguiente

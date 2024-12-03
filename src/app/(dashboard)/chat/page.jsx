@@ -51,13 +51,13 @@ const ChatPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center  bg-gray-100">
+        <div className="flex items-center justify-center bg-gray-100">
             <div className="chat-container max-w-lg w-full bg-white shadow-lg rounded-lg overflow-hidden">
-                <div className="chat-header p-4 bg-green-600 dark:bg-gray-900 text-white text-center">
-                    <h2>Checkers Chat</h2>
+                <div className="chat-header p-4 bg-gradient-to-r from-green-600 to-green-800 text-white text-center">
+                    <h2>Checkers Room</h2>
                 </div>
                 <div className="connecting p-4 text-center text-gray-500">
-                    {isConnected ? `Connected as ${usuarioAuth.fullName}` : "Conectando..."}
+                    {isConnected ? `Conectado como ${usuarioAuth.fullName}` : "Conectando..."}
                 </div>
                 <ul id="messageArea" className="p-4 overflow-y-auto h-64">
                     {messages.map((msg, index) => (
@@ -72,13 +72,13 @@ const ChatPage = () => {
                         <input
                             type="text"
                             id="message"
-                            placeholder="Type a message..."
+                            placeholder="Haz tu consulta..."
                             className="form-control flex-grow border border-gray-300 rounded p-2"
                             value={inputMessage}
                             onChange={(e) => setInputMessage(e.target.value)}
                         />
-                        <button type="submit" className="primary bg-green-600 text-white rounded p-2">
-                            Send
+                        <button type="submit" className="primary bg-green-700 text-white rounded p-2">
+                            Enviar
                         </button>
                     </div>
                 </form>

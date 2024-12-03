@@ -27,12 +27,12 @@ const Navbar = () => {
           <div className="flex items-center space-x-3">
             <Image
               src="/logo.png"
-              alt="VerificadoUY Logo"
-              width={40}
-              height={40}
-              className="mr-2"
+              alt="Verificando UY"
+              width={45}
+              height={45}
+              className="mr-0"
             />
-            <h1 className="text-2xl font-bold whitespace-nowrap">Verificado Uy</h1>
+            <h1 className="text-2xl font-bold whitespace-nowrap">Verificando UY</h1>
           </div>
 
           {/* Navegación */}
