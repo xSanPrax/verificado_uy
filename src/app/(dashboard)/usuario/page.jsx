@@ -9,7 +9,7 @@ import SubscriptionManager from "@/components/citizen/SubscriptionManager";
 import HechosTable from "@/components/listados/listarHechos";
 
 const Dashboard = () => {
-  const { userRole, usuarioAuth } = useContext(AuthContext);
+  const { userRole } = useContext(AuthContext);
   const [showDonation, setShowDonation] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [showSubscriptionManager, setShowSubscriptionManager] = useState(false);
@@ -35,10 +35,11 @@ const Dashboard = () => {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 py-12 px-4">
-        <div className="max-w-5xl mx-auto text-center mb-12">
-          <h1 className="text-5xl font-bold tracking-tight text-gray-900">Bienvenido {usuarioAuth.fullName}</h1>
-          <p className="text-2xl my-6">Explora, navega, suscríbete e informate de un hecho</p>
+      <div className="min-h-screen bg-gray-50 text-gray-800 py-12 px-4">
+        <div className="max-w-7xl mx-auto text-center mb-12">
+          <h1 className="text-5xl font-bold tracking-tight text-gray-900">
+            Bienvenido 
+          </h1>
         </div>
 
         <main className="space-y-12">
@@ -48,7 +49,7 @@ const Dashboard = () => {
               className={`px-6 py-3 text-lg rounded-lg font-semibold transition-colors ${
                 showSubscriptionManager
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-600 hover:text-gray-200"
+                  : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
               }`}
             >
               {showSubscriptionManager ? "Ocultar Categorías" : "Gestionar Categorías"}
@@ -59,7 +60,7 @@ const Dashboard = () => {
               className={`px-6 py-3 text-lg rounded-lg font-semibold transition-colors ${
                 showDonation
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-600 hover:text-gray-200"
+                  : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
               }`}
             >
               {showDonation ? "Ocultar Donación" : "Hacer Donación"}
@@ -81,7 +82,7 @@ const Dashboard = () => {
               className={`px-6 py-3 text-lg rounded-lg font-semibold transition-colors ${
                 showReport
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-600 hover:text-gray-200" 
+                  : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
               }`}
             >
               {showReport ? "Ocultar Reporte" : "Ver Reporte"}

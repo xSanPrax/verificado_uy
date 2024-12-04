@@ -130,7 +130,7 @@ export const AppState = ({ children }) => {
     }
   }, []);
 
-  const listarHechosPaginados = useCallback(async (page = 0, size = 10) => {
+  const listarHechosPaginados = useCallback(async (page = 0, size = 200) => {
     try {
       dispatch({ type: CARGAR_HECHOS });
       const response = await axios.get("/hechos/listarHechos", {
@@ -326,6 +326,26 @@ export const AppState = ({ children }) => {
     }
   };
 
+
+  const verificarHecho = useCallback(async (id, verificacion) => {
+    try {
+      const response = await axios.put(
+        `/hechos/${id}/verificar`,
+        verificacion,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return response.data.message || "Operación exitosa.";
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || error.response?.data || "Error al verificar el hecho."; // Maneja texto plano
+      return errorMessage;
+    }
+  }, []);
+
+
+
   useEffect(() => {
     fetchDonationConfig();
     obtenerCitizenId();
@@ -358,6 +378,7 @@ export const AppState = ({ children }) => {
         crearUsuario,
         modificarUsuarioRole,
         listUsuarios,
+        verificarHecho,
       }}
     >
       {children}

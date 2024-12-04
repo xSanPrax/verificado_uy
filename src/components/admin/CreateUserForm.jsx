@@ -28,35 +28,40 @@ const CreateUserForm = () => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Crear Usuario</h2>
-      {mensaje && <p className="text-red-500">{mensaje}</p>}
+    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg">
+      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+        Crear Usuario
+      </h2>
+      {mensaje && <p className="text-red-500 mb-4">{mensaje}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Nombre"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          className="input-field mb-2"
+          className="w-full p-2 mb-4 border border-gray-300 dark:border-gray-700 rounded-lg text-sm dark:bg-gray-700 dark:text-gray-100"
         />
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="input-field mb-2"
+          className="w-full p-2 mb-4 border border-gray-300 dark:border-gray-700 rounded-lg text-sm dark:bg-gray-700 dark:text-gray-100"
         />
         <select
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className="input-field mb-2"
+          className="w-full p-2 mb-4 border border-gray-300 dark:border-gray-700 rounded-lg text-sm dark:bg-gray-700 dark:text-gray-100"
         >
           <option value="CITIZEN">CITIZEN</option>
           <option value="ADMIN">ADMIN</option>
           <option value="CHECKER">CHECKER</option>
           <option value="SUBMITTER">SUBMITTER</option>
         </select>
-        <button type="submit" className="btn btn-primary mt-4">
+        <button
+          type="submit"
+          className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200"
+        >
           Crear Usuario
         </button>
       </form>

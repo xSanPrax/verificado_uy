@@ -5,92 +5,107 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 flex flex-col">
-
-      {/* Main Content */}
-      <main className="flex-grow bg-gray-100 dark:bg-gray-900 text-center py-20 px-6">
-        <section className="max-w-3xl mx-auto space-y-8">
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-            ¡No te dejes engañar!
-          </h2>
-          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300">
-            En Verificado Uy te ayudamos a diferenciar entre los hechos reales y la desinformación. 
-            Nuestra misión es brindar información verificada y ayudar a la comunidad a mantenerse informada.
+      {/* Header */}
+      <header className="bg-gradient-to-r from-green-500 to-green-700 text-white py-16">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h1 className="text-6xl font-extrabold mb-6">Verificado Uy</h1>
+          <p className="text-lg md:text-xl font-light">
+            Combatiendo la desinformación. Descubre la verdad detrás de las noticias.
           </p>
           <a
             href="/login"
-            className="inline-block px-10 py-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-transform transform hover:scale-105"
+            className="mt-8 inline-block px-10 py-4 bg-white text-green-700 font-bold rounded-lg shadow-lg hover:bg-green-100 transition-transform transform hover:scale-105"
           >
-            Verificar un hecho ahora
+            Verificar ahora
           </a>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-grow bg-gray-50 dark:bg-gray-900 py-20 px-6">
+        <section className="max-w-7xl mx-auto space-y-24">
+          {/* Feature 1 */}
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
+            <div className="w-full lg:w-1/2">
+              <Image
+                src="/images/diario.png"
+                alt="Detección de noticias falsas"
+                width={700}
+                height={500}
+                className="rounded-xl shadow-lg"
+              />
+            </div>
+            <div className="w-full lg:w-1/2">
+              <h2 className="text-4xl font-extrabold text-green-700 mb-6">
+                Detecta noticias falsas rápidamente
+              </h2>
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                Nuestro sistema avanzado te permite verificar noticias en tiempo real, ayudándote a identificar
+                desinformación antes de que se propague. Confía en nuestra tecnología para estar siempre informado.
+              </p>
+            </div>
+          </div>
+
+          {/* Feature 2 */}
+          <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-24">
+            <div className="w-full lg:w-1/2">
+              <Image
+                src="/images/macaco.png"
+                alt="Análisis seguro"
+                width={700}
+                height={500}
+                className="rounded-xl shadow-lg"
+              />
+            </div>
+            <div className="w-full lg:w-1/2">
+              <h2 className="text-4xl font-extrabold text-green-700 mb-6">
+                Análisis respaldado por expertos
+              </h2>
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                Confía en nuestro equipo de especialistas y tecnología avanzada para validar la autenticidad
+                de cualquier información. Nos aseguramos de ofrecerte resultados confiables y precisos.
+              </p>
+            </div>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
+            <div className="w-full lg:w-1/2">
+              <Image
+                src="/images/macaco23.png"
+                alt="Resultados claros"
+                width={700}
+                height={500}
+                className="rounded-xl shadow-lg"
+              />
+            </div>
+            <div className="w-full lg:w-1/2">
+              <h2 className="text-4xl font-extrabold text-green-700 mb-6">
+                Resultados claros y confiables
+              </h2>
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                Recibe un informe detallado con resultados transparentes: verdadero, falso o engañoso.
+                Nuestra plataforma está diseñada para brindarte información clara y útil.
+              </p>
+            </div>
+          </div>
         </section>
       </main>
 
-      {/* Recent Verifications */}
-      <section className="bg-white dark:bg-gray-800 py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-10 text-center">Verificaciones Recientes</h2>
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((id) => (
-              <div
-                key={id}
-                className="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105"
-              >
-                <Image
-                  src={`/facts_verified_${id}.jpg`}
-                  alt={`Verificación hecho ${id}`}
-                  width={500}
-                  height={300}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <h3 className="text-2xl font-semibold mb-3">Verificación: Hecho {id}</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Resumen breve sobre el hecho verificado y el resultado: verdadero, falso o engañoso.
-                  </p>
-                  <a
-                    href="#"
-                    className="text-blue-600 dark:text-blue-400 mt-4 inline-block font-medium hover:underline"
-                  >
-                    Leer verificación completa →
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="bg-green-700 text-white py-8">
+      <footer className="bg-green-700 text-white py-10">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex space-x-6 mb-4 md:mb-0">
-            <a
-              className="hover:underline"
-              href="https://nextjs.org/learn"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Aprende más sobre verificación
-            </a>
-            <a
-              className="hover:underline"
-              href="https://vercel.com/templates"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Ejemplos
-            </a>
-            <a
-              className="hover:underline"
-              href="https://nextjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Visita Next.js →
-            </a>
+          <div className="mb-6 md:mb-0">
+            <h3 className="text-lg font-bold">Verificado Uy</h3>
+            <p className="text-sm">La verdad importa. Combatimos la desinformación todos los días.</p>
           </div>
-          <p className="text-sm">© 2024 Verificado Uy. Todos los derechos reservados.</p>
+          <div className="flex space-x-6">
+            <a className="hover:underline" href="/about">Sobre Nosotros</a>
+            <a className="hover:underline" href="/contact">Contacto</a>
+            <a className="hover:underline" href="/faq">Preguntas Frecuentes</a>
+          </div>
         </div>
+        <p className="text-center text-sm mt-4">© 2024 Verificado Uy. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

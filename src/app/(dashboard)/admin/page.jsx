@@ -7,10 +7,9 @@ import CreateUserForm from "@/components/admin/CreateUserForm";
 import UpdateUserRoleForm from "@/components/admin/UpdateUserRoleForm";
 import UserList from "@/components/admin/UserList";
 import NodoManager from "@/components/nodos/NodoManager";
-import DonationConfig from "@/components/admin/DonationConfig";
-
+import DonationConfig from "@/components/admin/DonationConfig"; 
 const Dashboard = () => {
-  const { userRole, usuarioAuth } = useContext(AuthContext);
+  const { userRole } = useContext(AuthContext);
   const [showCreateUser, setShowCreateUser] = useState(false);
   const [showUpdateUserRole, setShowUpdateUserRole] = useState(false);
   const [showUserList, setShowUserList] = useState(false);
@@ -32,7 +31,7 @@ const Dashboard = () => {
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 py-12 px-4">
         <div className="max-w-5xl mx-auto text-center mb-12">
-          <h1 className="text-5xl font-bold mb-6">Panel de Administrador</h1>
+          <h1 className="text-5xl font-bold mb-6">ADMINISTRADOR</h1>
           <p className="text-2xl mb-8">Gestiona usuarios, nodos y configuraciones</p>
         </div>
 
@@ -41,7 +40,7 @@ const Dashboard = () => {
           <button
             onClick={() => setShowCreateUser(!showCreateUser)}
             className={`px-6 py-3 text-lg rounded-lg font-semibold transition-colors ${
-              showCreateUser ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-800 hover:bg-gray-800 hover:text-gray-300 dark:bg-gray-700 dark:text-gray-200"
+              showCreateUser ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
             }`}
           >
             {showCreateUser ? "Ocultar Crear Usuario" : "Crear Usuario"}
@@ -49,7 +48,7 @@ const Dashboard = () => {
           <button
             onClick={() => setShowUpdateUserRole(!showUpdateUserRole)}
             className={`px-6 py-3 text-lg rounded-lg font-semibold transition-colors ${
-              showUpdateUserRole ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-800 hover:bg-gray-800 hover:text-gray-300 dark:bg-gray-700 dark:text-gray-200"
+              showUpdateUserRole ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
             }`}
           >
             {showUpdateUserRole ? "Ocultar Modificar Rol" : "Modificar Rol"}
@@ -57,7 +56,7 @@ const Dashboard = () => {
           <button
             onClick={() => setShowUserList(!showUserList)}
             className={`px-6 py-3 text-lg rounded-lg font-semibold transition-colors ${
-              showUserList ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-800 hover:bg-gray-800 hover:text-gray-300 dark:bg-gray-700 dark:text-gray-200"
+              showUserList ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
             }`}
           >
             {showUserList ? "Ocultar Lista de Usuarios" : "Lista de Usuarios"}
@@ -65,7 +64,7 @@ const Dashboard = () => {
           <button
             onClick={() => setShowNodoManager(!showNodoManager)}
             className={`px-6 py-3 text-lg rounded-lg font-semibold transition-colors ${
-              showNodoManager ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-800 hover:bg-gray-800 hover:text-gray-300 dark:bg-gray-700 dark:text-gray-200"
+              showNodoManager ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
             }`}
           >
             {showNodoManager ? "Ocultar Nodo Manager" : "Nodo Manager"}
