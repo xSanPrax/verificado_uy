@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import VerificarHechoForm from "@/components/hechos/VerificarHechoForm";
 
 const HechoPopup = ({ hecho, onClose, onAction }) => {
   const [userRole, setUserRole] = useState(null);
+  const [showVerificarForm, setShowVerificarForm] = useState(false);
 
   useEffect(() => {
     const usuarioAuth = localStorage.getItem("usuarioAuth");
@@ -14,6 +16,10 @@ const HechoPopup = ({ hecho, onClose, onAction }) => {
   }, []);
 
   if (!hecho) return null;
+
+  const handleVerificar = () => {
+    setShowVerificarForm(true);
+  };
 
   const renderActions = () => {
     switch (userRole) {
@@ -41,7 +47,7 @@ const HechoPopup = ({ hecho, onClose, onAction }) => {
         return (
           <>
             <button
-              onClick={() => onAction("verificar", hecho.id)}
+              onClick={handleVerificar}
               className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-500"
             >
               Verificar
@@ -77,6 +83,15 @@ const HechoPopup = ({ hecho, onClose, onAction }) => {
         return null;
     }
   };
+
+  if (showVerificarForm) {
+    return (
+      <VerificarHechoForm
+        hechoId={hecho.id}
+        onClose={() => setShowVerificarForm(false)}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">

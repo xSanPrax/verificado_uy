@@ -38,7 +38,7 @@ const Dashboard = () => {
       <div className="min-h-screen bg-gray-50 text-gray-800 py-12 px-4">
         <div className="max-w-7xl mx-auto text-center mb-12">
           <h1 className="text-5xl font-bold tracking-tight text-gray-900">
-            Bienvenido al Dashboard
+            Bienvenido 
           </h1>
         </div>
 

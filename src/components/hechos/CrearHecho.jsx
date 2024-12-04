@@ -2,11 +2,13 @@
 
 import { useState, useContext, useCallback } from "react";
 import AppContext from "@/context/app/AppContext";
+import DOMPurify from "dompurify";
 
 const CrearHecho = ({ setShowCrearHecho }) => {
   const { crearHecho, cargando, mostrarAlerta } = useContext(AppContext);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
 
   const handleCancelar = useCallback(() => {
     setShowCrearHecho(false);
@@ -15,21 +17,30 @@ const CrearHecho = ({ setShowCrearHecho }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!description.trim() || !category.trim()) {
+    const sanitizedDescription = DOMPurify.sanitize(description);
+
+    if (!sanitizedDescription.trim() || !category.trim()) {
       mostrarAlerta("Por favor, completa todos los campos.");
       return;
     }
 
     try {
-      const hechoCreado = await crearHecho(description.trim(), category.trim());
+      const hechoCreado = await crearHecho(
+        sanitizedDescription.trim(),
+        category.trim()
+      );
       if (hechoCreado) {
         mostrarAlerta("Hecho creado correctamente.");
+        setResponseMessage("Hecho creado exitosamente.");
         setDescription("");
         setCategory("");
         setShowCrearHecho(false);
       }
     } catch (error) {
-      console.error("Error al crear el hecho:", error);
+      const errorMessage =
+        error.response?.data?.message || "Error al crear el hecho.";
+      console.error("Error al crear el hecho:", errorMessage);
+      setResponseMessage(errorMessage);
     }
   };
 
@@ -69,17 +80,28 @@ const CrearHecho = ({ setShowCrearHecho }) => {
             >
               Categoría
             </label>
-            <input
+            <select
               id="category"
-              type="text"
               className={inputClass}
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               disabled={cargando}
-              placeholder="Ingresa la categoría del hecho"
               aria-invalid={!category.trim()}
-            />
+            >
+              <option value="">Seleccionar una categoría</option>
+              <option value="Salud">Salud</option>
+              <option value="Economía">Economía</option>
+              <option value="Tecnología">Tecnología</option>
+              <option value="Deportes">Deportes</option>
+              <option value="Política">Política</option>
+            </select>
           </div>
+
+          {responseMessage && (
+            <div className="text-sm text-center text-gray-700 dark:text-gray-300 mt-4">
+              {responseMessage}
+            </div>
+          )}
 
           <div className="flex justify-end space-x-4">
             <button

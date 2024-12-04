@@ -31,7 +31,7 @@ const Dashboard = () => {
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 py-12 px-4">
         <div className="max-w-5xl mx-auto text-center mb-12">
-          <h1 className="text-5xl font-bold mb-6">Bienvenido al Dashboard de ADMINISTRADOR</h1>
+          <h1 className="text-5xl font-bold mb-6">ADMINISTRADOR</h1>
           <p className="text-2xl mb-8">Gestiona usuarios, nodos y configuraciones</p>
         </div>
 
