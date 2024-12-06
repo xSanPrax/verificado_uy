@@ -345,6 +345,19 @@ export const AppState = ({ children }) => {
   }, []);
 
 
+  const asignarChecker = async (hechoId) => {
+    if (!hechoId) {
+      console.warn("Hecho ID no está definido");
+      return;
+    }
+  
+    try {
+      const response = await axios.post(`/${hechoId}/asignar-checker/`);
+      alert("Checker asignado con éxito");
+    } catch (error) {
+      alert("Error al asignar checker: " + (error.response?.data || "Error desconocido."));
+    }
+  };
 
   useEffect(() => {
     fetchDonationConfig();
@@ -379,6 +392,7 @@ export const AppState = ({ children }) => {
         modificarUsuarioRole,
         listUsuarios,
         verificarHecho,
+        asignarChecker,
       }}
     >
       {children}

@@ -36,10 +36,10 @@ const HechoPopup = ({ hecho, onClose, onAction }) => {
       case "SUBMITTER":
         return (
           <button
-            onClick={() => onAction("solicitarVerificacion", hecho.id)}
-            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500"
+            onClick={() => onAction("asignarChecker", hecho.id)}
+            className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-500"
           >
-            Solicitar Verificación
+            Asignar Checker
           </button>
         );
 
@@ -63,20 +63,12 @@ const HechoPopup = ({ hecho, onClose, onAction }) => {
 
       case "ADMIN":
         return (
-          <>
-            <button
-              onClick={() => onAction("asignarChecker", hecho.id)}
-              className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-500"
-            >
-              Asignar Checker
-            </button>
-            <button
-              onClick={() => onAction("eliminar", hecho.id)}
-              className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-500"
-            >
-              Eliminar
-            </button>
-          </>
+          <button
+            onClick={() => onAction("eliminar", hecho.id)}
+            className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-500"
+          >
+            Eliminar
+          </button>
         );
 
       default:
